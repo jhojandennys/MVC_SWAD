@@ -53,7 +53,11 @@ public class AdminController extends HttpServlet {
                         view = "product/list.jsp";
                         break;
                     case "venta":
-                        view = "venta/list.jsp";
+                        if (accion != null && accion.equals("vender")) {
+                            view = "venta/vender.jsp";
+                        } else {
+                            view = "venta/list.jsp";
+                        }
                         break;
                     case "compra":
                         view = "compra/list.jsp";

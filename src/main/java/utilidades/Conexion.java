@@ -19,7 +19,7 @@ public class Conexion {
     public static Connection conecta() {
         try {
             Dotenv dotenv = Dotenv.configure()
-                    .directory("")
+                    .directory("/")
                     .load();
             String usr = dotenv.get("user");
             String psw = dotenv.get("password");
