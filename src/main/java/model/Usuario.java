@@ -9,8 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
-import java.util.LinkedList;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import utilidades.Conexion;
 
@@ -21,178 +21,438 @@ import utilidades.Conexion;
 public class Usuario {
 
     private Long id;
-
     private String dni;
-
-    private String nombre;
-
-    private Date fechaNac;
-
-    private String telefono;
-
+    private String nombres;
+    private String apePaterno;
+    private String apeMaterno;
     private String correo;
-
-    private String password;
-
-    private String apellidoMat;
-
-    private String apellidoPat;
-
-    private byte[] foto;
-
-    private String rol;
+    private String contra;
+    private String telefono;
+    private Rol rol;
+    private EstadoEmpleado estado;
 
     public Usuario() {
     }
 
-    public int authenticate(String correo, String psw) {
-        int logueado;
+    public Usuario authenticate(String email, String psw) {
+        Usuario logueado = new Usuario();
         try {
-            Conexion c = new Conexion();
-            Connection cnx = c.conecta();
-            int cont = 0;
-            String query = "select * from usuarios ";
-            query += "where correo='" + correo + "' and ";
-            query += "password='" + psw + "'";
-            Statement sentencia = cnx.createStatement();
-            ResultSet resultado = sentencia.executeQuery(query);
-            while (resultado.next()) {
-                cont++;
-            }
-            if (cont != 0) {
-                logueado = 1;
+            Connection cnx = Conexion.conecta();
+            String query = "SELECT e.*, r.nombre as nombreRol FROM Empleados e INNER JOIN Roles r on e.idRol = r.id WHERE e.correo = ?  AND e.contra = ?";
+            PreparedStatement sentencia = cnx.prepareStatement(query);
+            sentencia.setString(1, email);
+            sentencia.setString(2, psw);
+            ResultSet resultado = sentencia.executeQuery();
+            Rol rolN = new Rol();
+            rolN.setId(Long.valueOf("-1"));
+            if (resultado.next()) {
+                logueado.setId(resultado.getLong("id"));
+                rolN.setId(Long.valueOf(resultado.getString("idRol")));
+                System.out.println("Usuario autenticado Correctamente: " + email);
             } else {
-                logueado = 0;
+                rolN.setId(Long.valueOf("0"));
             }
+            logueado.setRol(rolN);
+            resultado.close();
+            sentencia.close();
+            cnx.close();
+
             return logueado;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error en authenticate: " + e.getMessage());
+            return logueado;
         }
-        return -666;
     }
 
-    public void createUser(String cliente_id, String cliente_password,
-            String cliente_nombre, String cliente_direccion,
-            int cliente_telefono) {
+    public int createUser(String dni, String nombres, String correo, String contra,
+            String apePaterno, String apeMaterno, String telefono, int idRol, int usuCreador) {
+        // Verificar que los campos no sean vacíos
+        if (dni == null || dni.trim().isEmpty()
+                || nombres == null || nombres.trim().isEmpty()
+                || correo == null || correo.trim().isEmpty()
+                || contra == null || contra.trim().isEmpty()
+                || apePaterno == null || apePaterno.trim().isEmpty()
+                || apeMaterno == null || apeMaterno.trim().isEmpty()
+                || telefono == null || telefono.trim().isEmpty()) {
+            System.out.println("Error: Todos los campos deben ser completados.");
+            return 0;
+        }
+
+        // Verificar que el DNI tenga exactamente 8 dígitos
+        if (dni.length() != 8 || !dni.matches("\\d+")) {
+            System.out.println("Error: El DNI debe tener exactamente 8 dígitos.");
+            return 0;
+        }
+
+        Connection cnx = null;
+        PreparedStatement insertStmt = null;
+        PreparedStatement selectStmt = null;
+        ResultSet rs = null;
+        int filasInsertadas = 0;
+        try {
+            Conexion c = new Conexion();
+            cnx = c.conecta();
+
+            // Prepara la consulta de inserción
+            String insertQuery = "INSERT INTO empleados (nombres, apePaterno, apeMaterno, correo, contra, telefono, idRol, idEstado, dni, usuarioCreador, usuarioModificador) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            insertStmt = cnx.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
+            insertStmt.setString(1, nombres);
+            insertStmt.setString(2, apePaterno);
+            insertStmt.setString(3, apeMaterno);
+            insertStmt.setString(4, correo);
+            insertStmt.setString(5, contra);
+            insertStmt.setString(6, telefono);
+            insertStmt.setInt(7, idRol);
+            insertStmt.setInt(8, 1); // idEstado, asumido como valor constante
+            insertStmt.setString(9, dni);
+            insertStmt.setInt(10, usuCreador);
+            insertStmt.setInt(11, usuCreador);
+
+            filasInsertadas = insertStmt.executeUpdate();
+
+            if (filasInsertadas > 0) {
+                // Obtener el ID del nuevo registro
+                rs = insertStmt.getGeneratedKeys();
+                if (rs.next()) {
+                    int nuevoId = rs.getInt(1);
+
+                    // Consultar el registro recién creado
+                    String selectQuery = "SELECT * FROM empleados WHERE id=?";
+                    selectStmt = cnx.prepareStatement(selectQuery);
+                    selectStmt.setInt(1, nuevoId);
+                    ResultSet rsSelect = selectStmt.executeQuery();
+
+                    if (rsSelect.next()) {
+                        // Mostrar el registro creado
+                        System.out.println("Usuario Creado Correctamente:");
+                        System.out.println("ID: " + rsSelect.getInt("id"));
+                        System.out.println("DNI: " + rsSelect.getString("dni"));
+                        System.out.println("Nombres: " + rsSelect.getString("nombres"));
+                        System.out.println("Correo: " + rsSelect.getString("correo"));
+                        System.out.println("Contraseña: " + rsSelect.getString("contra"));
+                        System.out.println("Apellido Paterno: " + rsSelect.getString("apePaterno"));
+                        System.out.println("Apellido Materno: " + rsSelect.getString("apeMaterno"));
+                        System.out.println("Teléfono: " + rsSelect.getString("telefono"));
+                        System.out.println("ID Rol: " + rsSelect.getInt("idRol"));
+                        System.out.println("ID Estado: " + rsSelect.getInt("idEstado"));
+                        System.out.println("Usuario Creador: " + rsSelect.getInt("usuarioCreador"));
+                        System.out.println("Usuario Modificador: " + rsSelect.getInt("usuarioModificador"));
+                    } else {
+                        System.out.println("No se pudo recuperar el usuario recién creado.");
+                    }
+                    rsSelect.close();
+                }
+            } else {
+                System.out.println("No se pudo crear el usuario.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en crearUsuario: " + e.getMessage());
+            return 0;
+        } finally {
+            // Cierra los recursos en el bloque finally
+            try {
+                if (insertStmt != null) {
+                    insertStmt.close();
+                }
+                if (selectStmt != null) {
+                    selectStmt.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+                if (cnx != null) {
+                    cnx.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Error al cerrar recursos: " + e.getMessage());
+            }
+        }
+
+        return filasInsertadas;
+    }
+
+    public int editUser(int id, String dni, String nombres, String correo, String contra,
+            String apePaterno, String apeMaterno, String telefono, int idRol, int idEstado) {
+        // Validación de campos
+        if (dni == null || dni.trim().isEmpty() || dni.length() > 8) {
+            System.out.println("El DNI no debe estar vacío y debe tener un máximo de 8 dígitos.");
+            return 0;
+        }
+        if (nombres == null || nombres.trim().isEmpty()) {
+            System.out.println("El nombre no debe estar vacío.");
+            return 0;
+        }
+        if (correo == null || correo.trim().isEmpty()) {
+            System.out.println("El correo no debe estar vacío.");
+            return 0;
+        }
+        if (contra == null || contra.trim().isEmpty()) {
+            System.out.println("La contraseña no debe estar vacía.");
+            return 0;
+        }
+        if (apePaterno == null || apePaterno.trim().isEmpty()) {
+            System.out.println("El apellido paterno no debe estar vacío.");
+            return 0;
+        }
+        if (apeMaterno == null || apeMaterno.trim().isEmpty()) {
+            System.out.println("El apellido materno no debe estar vacío.");
+            return 0;
+        }
+        if (telefono == null || telefono.trim().isEmpty()) {
+            System.out.println("El teléfono no debe estar vacío.");
+            return 0;
+        }
+
         try {
             Conexion c = new Conexion();
             Connection cnx = c.conecta();
-            // int cnt = Integer.parseInt(cantidad);
-            // double mnt = Double.parseDouble(monto);
-            String query = "insert into cliente values(?,?,?,?,?)";
+
+            // Prepara la consulta de actualización
+            String query = "UPDATE empleados SET dni=?, nombres=?, correo=?, contra=?, "
+                    + "apePaterno=?, apeMaterno=?, idEstado=?, idRol=?, telefono=? WHERE id=?";
             PreparedStatement sentencia = cnx.prepareStatement(query);
-            sentencia.setString(1, cliente_id);
-            sentencia.setString(2, cliente_password);
-            sentencia.setString(3, cliente_nombre);
-            sentencia.setString(4, cliente_direccion);
-            sentencia.setInt(5, cliente_telefono);
+            sentencia.setString(1, dni);
+            sentencia.setString(2, nombres);
+            sentencia.setString(3, correo);
+            sentencia.setString(4, contra);
+            sentencia.setString(5, apePaterno);
+            sentencia.setString(6, apeMaterno);
+            sentencia.setInt(7, idEstado);
+            sentencia.setInt(8, idRol);
+            sentencia.setString(9, telefono);
+            sentencia.setInt(10, id);
 
-            sentencia.executeUpdate();
+            int filasActualizadas = sentencia.executeUpdate();
+
+            if (filasActualizadas > 0) {
+                // Imprime los cambios realizados
+                System.out.println("Registro modificado correctamente.");
+                System.out.println("Cambios realizados:");
+                System.out.println("ID: " + id);
+                System.out.println("DNI: " + dni);
+                System.out.println("Nombres: " + nombres);
+                System.out.println("Correo: " + correo);
+                System.out.println("Contraseña: " + contra);
+                System.out.println("Apellido Paterno: " + apePaterno);
+                System.out.println("Apellido Materno: " + apeMaterno);
+                System.out.println("Teléfono: " + telefono);
+                System.out.println("ID Rol: " + idRol);
+                System.out.println("ID Estado: " + idEstado);
+            } else {
+                System.out.println("No se encontró el usuario con el ID proporcionado o no se realizaron cambios.");
+            }
             sentencia.close();
             cnx.close();
+
+            return filasActualizadas > 0 ? 1 : 0;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error en editUser: " + e.getMessage());
+            return 0;
         }
     }
 
-    public void updateUserById(String cliente_id, String cliente_password,
-            String cliente_nombre, String cliente_direccion,
-            int cliente_telefono) {
+    public int deleteUser(String id) {
         try {
             Conexion c = new Conexion();
             Connection cnx = c.conecta();
-            // int cnt = Integer.parseInt(cantidad);
-            // double mnt = Double.parseDouble(monto);
-            String query = "update cliente set cliente_password=?, "
-                    + "cliente_nombre=?, cliente_direccion=?,"
-                    + "cliente_telefono=? where cliente_id = ?);";
+
+            String query = "DELETE FROM empleados WHERE id=?";
             PreparedStatement sentencia = cnx.prepareStatement(query);
+            sentencia.setString(1, id);
 
-            sentencia.setString(1, cliente_password);
-            sentencia.setString(2, cliente_nombre);
-            sentencia.setString(3, cliente_direccion);
-            sentencia.setInt(4, cliente_telefono);
-            sentencia.setString(5, cliente_id);
+            int filasEliminadas = sentencia.executeUpdate();
 
-            sentencia.executeUpdate();
             sentencia.close();
             cnx.close();
+
+            return filasEliminadas;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error en deleteUser: " + e.getMessage());
+            return 0;
         }
     }
 
-    public void deleteUserById(String cliente_id) {
+    public Usuario getUserByDni(String dni) {
+        Usuario usr = new Usuario();
         try {
             Conexion c = new Conexion();
             Connection cnx = c.conecta();
-            // int cnt = Integer.parseInt(cantidad);
-            // double mnt = Double.parseDouble(monto);
-            String query = "delete from cliente where cliente_id = ?);";
+            String query = "SELECT \n"
+                    + "  e.id AS empleado_id,\n"
+                    + "  e.dni,\n"
+                    + "  e.nombres,\n"
+                    + "  e.apePaterno,\n"
+                    + "  e.apeMaterno,\n"
+                    + "  e.correo,\n"
+                    + "  e.telefono,\n"
+                    + "  r.id AS rol_id,\n"
+                    + "  r.nombre AS rol_nombre,\n"
+                    + "  r.descripcion AS rol_descripcion,\n"
+                    + "  es.id AS estado_id,\n"
+                    + "  es.nombre AS estado_nombre,\n"
+                    + "  es.descripcion AS estado_descripcion\n"
+                    + "FROM BDCamas.Empleados e\n"
+                    + "JOIN BDCamas.Roles r ON e.idRol = r.id\n"
+                    + "JOIN BDCamas.EstadosEmpleado es ON e.idEstado = es.id where e.dni = ?";
             PreparedStatement sentencia = cnx.prepareStatement(query);
+            sentencia.setString(1, dni);
+            ResultSet resultado = sentencia.executeQuery();
 
-            sentencia.setString(1, cliente_id);
+            while (resultado.next()) {
+                usr.setId(resultado.getLong("empleado_id"));
+                usr.setDni(resultado.getString("dni"));
+                usr.setNombres(resultado.getString("nombres"));
+                usr.setApePaterno(resultado.getString("apePaterno"));
+                usr.setApeMaterno(resultado.getString("apeMaterno"));
+                usr.setTelefono(resultado.getString("telefono"));
+                usr.setCorreo(resultado.getString("correo"));
 
-            sentencia.executeUpdate();
+                Rol rl = new Rol();
+                rl.setId(resultado.getLong("rol_id"));
+                rl.setNombre(resultado.getString("rol_nombre"));
+                rl.setDescripcion(resultado.getString("rol_descripcion"));
+
+                EstadoEmpleado esEmpleado = new EstadoEmpleado();
+                esEmpleado.setId(resultado.getLong("estado_id"));
+                esEmpleado.setNombre(resultado.getString("estado_nombre"));
+                esEmpleado.setDescripcion(resultado.getString("estado_descripcion"));
+
+                usr.setRol(rl);
+                usr.setEstado(esEmpleado);
+            }
+            resultado.close();
             sentencia.close();
             cnx.close();
+            return usr;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error en getEmpleadoBy id: " + e.getMessage());
         }
+
+        return usr;
+
     }
 
-    public void getUserById(String cliente_id) {
+    public Usuario getUserById(String id) {
+        Usuario usr = new Usuario();
         try {
             Conexion c = new Conexion();
             Connection cnx = c.conecta();
-            String query = "select * from cliente where cliente_id=" + cliente_id + ";";
-            Statement sentencia = cnx.createStatement();
-            ResultSet resultado = sentencia.executeQuery(query);
+            String query = "SELECT \n"
+                    + "  e.id AS empleado_id,\n"
+                    + "  e.dni,\n"
+                    + "  e.nombres,\n"
+                    + "  e.apePaterno,\n"
+                    + "  e.apeMaterno,\n"
+                    + "  e.correo,\n"
+                    + "  e.telefono,\n"
+                    + "  r.id AS rol_id,\n"
+                    + "  r.nombre AS rol_nombre,\n"
+                    + "  r.descripcion AS rol_descripcion,\n"
+                    + "  es.id AS estado_id,\n"
+                    + "  es.nombre AS estado_nombre,\n"
+                    + "  es.descripcion AS estado_descripcion\n"
+                    + "FROM BDCamas.Empleados e\n"
+                    + "JOIN BDCamas.Roles r ON e.idRol = r.id\n"
+                    + "JOIN BDCamas.EstadosEmpleado es ON e.idEstado = es.id where e.id = ?";
+            PreparedStatement sentencia = cnx.prepareStatement(query);
+            sentencia.setString(1, id);
+            ResultSet resultado = sentencia.executeQuery();
 
-            resultado.next();
-            cliente_id = resultado.getString("cliente_id");
-            password = resultado.getString("cliente_password");
-            nombre = resultado.getString("cliente_nombre");
-            correo = resultado.getString("cliente_direccion");
-            telefono = resultado.getString("cliente_telefono");
+            while (resultado.next()) {
+                usr.setId(resultado.getLong("empleado_id"));
+                usr.setDni(resultado.getString("dni"));
+                usr.setNombres(resultado.getString("nombres"));
+                usr.setApePaterno(resultado.getString("apePaterno"));
+                usr.setApeMaterno(resultado.getString("apeMaterno"));
+                usr.setTelefono(resultado.getString("telefono"));
+                usr.setCorreo(resultado.getString("correo"));
 
+                Rol rl = new Rol();
+                rl.setId(resultado.getLong("rol_id"));
+                rl.setNombre(resultado.getString("rol_nombre"));
+                rl.setDescripcion(resultado.getString("rol_descripcion"));
+
+                EstadoEmpleado esEmpleado = new EstadoEmpleado();
+                esEmpleado.setId(resultado.getLong("estado_id"));
+                esEmpleado.setNombre(resultado.getString("estado_nombre"));
+                esEmpleado.setDescripcion(resultado.getString("estado_descripcion"));
+
+                usr.setRol(rl);
+                usr.setEstado(esEmpleado);
+            }
+            resultado.close();
             sentencia.close();
             cnx.close();
+            return usr;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error en getEmpleadoBy id: " + e.getMessage());
         }
+
+        return usr;
+
     }
 
     public List<Usuario> getUsers() {
+        List<Usuario> lista = new ArrayList<>();
         try {
             Conexion c = new Conexion();
             Connection cnx = c.conecta();
-            String query = "select * from usuarios;";
-            List<Usuario> lista = new LinkedList<>();
+            String query = "SELECT \n"
+                    + "  e.id AS empleado_id,\n"
+                    + "  e.dni,\n"
+                    + "  e.nombres,\n"
+                    + "  e.apePaterno,\n"
+                    + "  e.apeMaterno,\n"
+                    + "  e.correo,\n"
+                    + "  e.telefono,\n"
+                    + "  r.id AS rol_id,\n"
+                    + "  r.nombre AS rol_nombre,\n"
+                    + "  r.descripcion AS rol_descripcion,\n"
+                    + "  es.id AS estado_id,\n"
+                    + "  es.nombre AS estado_nombre,\n"
+                    + "  es.descripcion AS estado_descripcion\n"
+                    + "FROM BDCamas.Empleados e\n"
+                    + "JOIN BDCamas.Roles r ON e.idRol = r.id\n"
+                    + "JOIN BDCamas.EstadosEmpleado es ON e.idEstado = es.id";
             Statement sentencia = cnx.createStatement();
             ResultSet resultado = sentencia.executeQuery(query);
 
             while (resultado.next()) {
                 Usuario usr = new Usuario();
-                usr.id = resultado.getLong("id");
-                usr.password = resultado.getString("password");
-                usr.nombre = resultado.getString("nombre");
-                usr.apellidoMat = resultado.getString("apellidomat");
-                usr.apellidoPat = resultado.getString("apellidopat");
-                usr.correo = resultado.getString("correo");
-                usr.telefono = resultado.getString("telefono");
+                usr.setId(resultado.getLong("empleado_id"));
+                usr.setDni(resultado.getString("dni"));
+                usr.setNombres(resultado.getString("nombres"));
+                usr.setApePaterno(resultado.getString("apePaterno"));
+                usr.setApeMaterno(resultado.getString("apeMaterno"));
+                usr.setTelefono(resultado.getString("telefono"));
+                usr.setCorreo(resultado.getString("correo"));
+
+                Rol rl = new Rol();
+                rl.setId(resultado.getLong("rol_id"));
+                rl.setNombre(resultado.getString("rol_nombre"));
+                rl.setDescripcion(resultado.getString("rol_descripcion"));
+
+                EstadoEmpleado esEmpleado = new EstadoEmpleado();
+                esEmpleado.setId(resultado.getLong("estado_id"));
+                esEmpleado.setNombre(resultado.getString("estado_nombre"));
+                esEmpleado.setDescripcion(resultado.getString("estado_descripcion"));
+
+                usr.setRol(rl);
+                usr.setEstado(esEmpleado);
                 lista.add(usr);
             }
+
+            resultado.close();
             sentencia.close();
             cnx.close();
-            return lista;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error en getUsers: " + e.getMessage());
         }
-
-        return null;
+        return lista;
     }
 
+    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -209,20 +469,44 @@ public class Usuario {
         this.dni = dni;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNombres() {
+        return nombres;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombres(String nombres) {
+        this.nombres = nombres;
     }
 
-    public Date getFechaNac() {
-        return fechaNac;
+    public String getApePaterno() {
+        return apePaterno;
     }
 
-    public void setFechaNac(Date fechaNac) {
-        this.fechaNac = fechaNac;
+    public void setApePaterno(String apePaterno) {
+        this.apePaterno = apePaterno;
+    }
+
+    public String getApeMaterno() {
+        return apeMaterno;
+    }
+
+    public void setApeMaterno(String apeMaterno) {
+        this.apeMaterno = apeMaterno;
+    }
+
+    public String getContra() {
+        return contra;
+    }
+
+    public void setContra(String contra) {
+        this.contra = contra;
+    }
+
+    public EstadoEmpleado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoEmpleado estado) {
+        this.estado = estado;
     }
 
     public String getTelefono() {
@@ -242,42 +526,18 @@ public class Usuario {
     }
 
     public String getPassword() {
-        return password;
+        return contra;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.contra = password;
     }
 
-    public String getApellidoMat() {
-        return apellidoMat;
-    }
-
-    public void setApellidoMat(String apellidoMat) {
-        this.apellidoMat = apellidoMat;
-    }
-
-    public String getApellidoPat() {
-        return apellidoPat;
-    }
-
-    public void setApellidoPat(String apellidoPat) {
-        this.apellidoPat = apellidoPat;
-    }
-
-    public byte[] getFoto() {
-        return foto;
-    }
-
-    public void setFoto(byte[] foto) {
-        this.foto = foto;
-    }
-
-    public String getRol() {
+    public Rol getRol() {
         return rol;
     }
 
-    public void setRol(String rol) {
+    public void setRol(Rol rol) {
         this.rol = rol;
     }
 

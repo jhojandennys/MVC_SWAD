@@ -6,7 +6,7 @@ package model;
 
 /**
  *
- * @author Estudiante
+ * @author GianN
  */
 public class Detalle {
     private int venta_id;
