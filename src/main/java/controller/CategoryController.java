@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.Categoria;
 
 /**
@@ -49,7 +50,7 @@ public class CategoryController extends HttpServlet {
             case "/Categories/add":
             case "/Categories/edit":
             case "/Categories/delete":
-                request.getRequestDispatcher("/admin/index.jsp?pagina=categoria").forward(request, response);
+                response.sendRedirect("/admin?pagina=categoria");
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -63,9 +64,12 @@ public class CategoryController extends HttpServlet {
         String descripcion = request.getParameter("descripcion");
         System.out.println("***************AQUI ANTES DE CREAR***************");
         Categoria cat = new Categoria();
-        cat.createCategory(nombre, descripcion);
+        HttpSession sesion = request.getSession();
+        String idModificador = sesion.getAttribute("idUsuario").toString();
+        cat.createCategory(nombre, descripcion, idModificador);
         System.out.println("***************DESPUES DE CREAR***************");
-        request.getRequestDispatcher("/admin/index.jsp?pagina=categoria").forward(request, response);
+
+        response.sendRedirect("/admin?pagina=categoria");
     }
 
     private void handlDeleteCategory(HttpServletRequest request, HttpServletResponse response)
@@ -75,7 +79,8 @@ public class CategoryController extends HttpServlet {
         Categoria rol = new Categoria();
         rol.deleteCategory(id);
         System.out.println("***************DESPUES DE ELIMINAR***************");
-        request.getRequestDispatcher("/admin/index.jsp?pagina=categoria").forward(request, response);
+
+        response.sendRedirect("/admin?pagina=categoria");
     }
 
     private void handleEditCategory(HttpServletRequest request, HttpServletResponse response)
@@ -87,6 +92,7 @@ public class CategoryController extends HttpServlet {
         Categoria cat = new Categoria();
         cat.editCategory(id, nombre, descripcion);
         System.out.println("***************DESPUES DE EDITAR***************");
-        request.getRequestDispatcher("/admin/index.jsp?pagina=categoria").forward(request, response);
+
+        response.sendRedirect("/admin/admin?pagina=categoria");
     }
 }

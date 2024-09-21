@@ -16,7 +16,8 @@ public class Categoria {
     String descripcion;
 
     // Constructor vacío
-    public Categoria() {}
+    public Categoria() {
+    }
 
     // Método para obtener todas las categorías
     public List<Categoria> getCategories() {
@@ -41,19 +42,20 @@ public class Categoria {
     }
 
     // Método para crear una categoría
-    public int createCategory(String nombre, String descripcion) {
+    public int createCategory(String nombre, String descripcion, String usuCreador) {
         if (nombre == null || nombre.isEmpty() || descripcion == null || descripcion.isEmpty()) {
             System.out.println("El nombre o la descripción no pueden estar vacíos.");
             return 0;
         }
 
-        String query = "INSERT INTO categorias (nombre, descripcion) VALUES (?, ?)";
+        String query = "INSERT INTO categorias (nombre, descripcion,usuarioCreador,usuarioModificador) VALUES (?, ?,?,?)";
 
-        try (Connection cnx = new Conexion().conecta();
-             PreparedStatement sentencia = cnx.prepareStatement(query)) {
+        try (Connection cnx = new Conexion().conecta(); PreparedStatement sentencia = cnx.prepareStatement(query)) {
 
             sentencia.setString(1, nombre);
             sentencia.setString(2, descripcion);
+            sentencia.setString(3, usuCreador);
+            sentencia.setString(4, usuCreador);
             int filasInsertadas = sentencia.executeUpdate();
 
             return filasInsertadas > 0 ? 1 : 0;
@@ -73,8 +75,7 @@ public class Categoria {
 
         String query = "UPDATE categorias SET nombre=?, descripcion=? WHERE id=?";
 
-        try (Connection cnx = new Conexion().conecta();
-             PreparedStatement sentencia = cnx.prepareStatement(query)) {
+        try (Connection cnx = new Conexion().conecta(); PreparedStatement sentencia = cnx.prepareStatement(query)) {
 
             sentencia.setString(1, nombre);
             sentencia.setString(2, descripcion);
@@ -93,8 +94,7 @@ public class Categoria {
     public int deleteCategory(Long id) {
         String query = "DELETE FROM categorias WHERE id=?";
 
-        try (Connection cnx = new Conexion().conecta();
-             PreparedStatement sentencia = cnx.prepareStatement(query)) {
+        try (Connection cnx = new Conexion().conecta(); PreparedStatement sentencia = cnx.prepareStatement(query)) {
 
             sentencia.setLong(1, id);
             int filasEliminadas = sentencia.executeUpdate();
@@ -112,8 +112,7 @@ public class Categoria {
         String query = "SELECT * FROM categorias WHERE id=?";
         Categoria cat = null;
 
-        try (Connection cnx = new Conexion().conecta();
-             PreparedStatement sentencia = cnx.prepareStatement(query)) {
+        try (Connection cnx = new Conexion().conecta(); PreparedStatement sentencia = cnx.prepareStatement(query)) {
 
             sentencia.setLong(1, id);
             try (ResultSet resultado = sentencia.executeQuery()) {

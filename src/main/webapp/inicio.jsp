@@ -18,7 +18,7 @@
 </div>-->
 
 <div class="bg-primario">
-    <div class="hero mt-16 ">
+    <div class="hero  ">
         <div class="min-h-[280px] flex items-center container-fluid w-auto mx-auto">
             <div class=" flex w-full lg:flex-row justify-beetwen">
                 <div class="w-full flex flex-col lg:flex-row pt-8 px-4 ">

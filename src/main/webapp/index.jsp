@@ -79,13 +79,15 @@
 
             </div>
         </header>
-        <main class="pt-24md:pt-24 ">
+        <main class=" md:pt-24 ">
             <%  if (pagina == null || pagina.equals("inicio")) {
             %>  <%@include file = "/inicio.jsp" %><%
             } else if (pagina != null && pagina.equals("nosotros")) {
             %>  <%@include file = "/nosotros.jsp" %><%
             } else if (pagina != null && pagina.equals("contactanos")) {
             %>  <%@include file = "/contactanos.jsp" %><%
+            } else if (pagina != null && pagina.equals("detalle")) {
+            %>  <%@include file = "/detalleProducto.jsp" %><%
             } else if (pagina != null && pagina.equals("productos")) {
             %>  <%@include file = "/productos.jsp" %><%
                 }%>
@@ -166,14 +168,14 @@
                 </div>
             </div>
         </footer>
-        <button class="text-white rounded-full w-12 h-12 md:w-16 md:h-16 flex justify-center items-center text-center bg-primary-300 text-xl md:text-3xl fixed z-20 
-                right-4 bottom-4 cursor-pointer transition-all duration-500">
-            <i class="fa-solid fa-cart-shopping"></i>
-        </button>
-        <button class="text-white rounded-full w-12 h-12 md:w-16 md:h-16 flex justify-center items-center bg-green-500 text-2xl md:text-4xl fixed z-20  right-4 
+         <button class="text-white rounded-full w-12 h-12 md:w-16 md:h-16 flex justify-center items-center text-center bg-primary-300 text-xl md:text-3xl fixed z-20 
+                  right-4 bottom-4 cursor-pointer transition-all duration-500">
+              <i class="fa-solid fa-cart-shopping"></i>
+          </button>
+       <!--  <button class="text-white rounded-full w-12 h-12 md:w-16 md:h-16 flex justify-center items-center bg-green-500 text-2xl md:text-4xl fixed z-20  right-4 
                 bottom-20 cursor-pointer transition-all duration-500 md:bottom-24">
             <i class="fa-brands fa-whatsapp"></i>
-        </button>
+        </button>-->
     </div>
     <script>
         const navbutton = document.getElementById('showNav');

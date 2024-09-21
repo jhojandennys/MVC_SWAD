@@ -51,7 +51,7 @@
                 </div>
             </div>
         </header>
-        <main class="w-full  flex min-h-[calc(100vh-6rem)] relative">
+        <main class="w-full  flex min-h-[calc(100vh-96px)] relative">
             <aside class="-left-72 pt-10 bg-primario-600 transition-all duration-700 absolute md:static min-h-[calc(100vh-6rem)] 
                    min-w-64 md:block w-64  text-white ">
                 <ul>
@@ -173,11 +173,11 @@
                     </li>
                 </ul>
             </aside>
-            <div class="bg-neutral-300 p-4 w-full md:w-[calc(100%-16rem)]">
-                <div class="h-full">
+            <div class="bg-neutral-300 p-4 h-[calc(100vh-96px)] w-full md:w-[calc(100%-16rem)]">
+                <div class="h-full ">
                     <% String view = (String) request.getAttribute("view");  %>
                     <% if (view != null) {%>
-                        <jsp:include page="<%=view%>" />
+                    <jsp:include page="<%=view%>" />
                     <% } else { %>
                     <p>Página no encontrada.</p>
                     <% } %>

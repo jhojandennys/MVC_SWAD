@@ -135,6 +135,28 @@
         overflow: hidden; /* Oculta el texto que se desborda */
         text-overflow: ellipsis;
     }
+    .x-scroll::-webkit-scrollbar {
+        background-color: #4b5063!important;
+        height: 7px!important;
+        padding-top: 20px;
+        border-radius: 20px;
+    }
+    .x-scroll::-webkit-scrollbar-thumb{
+        background: #0178c7!important;
+        border-radius: 20px!important;
+        height: 7px!important;
+    }
+    .y-scroll::-webkit-scrollbar {
+        background-color: #4b5063!important;
+        height: 5px!important;
+        width: 5px;
+
+    }
+    .y-scroll::-webkit-scrollbar-thumb{
+        background: #0178c7!important;
+        border-radius: 20px!important;
+        width: 5px;
+    }
     /**CALENDARIO**/
     .rbc-header {
         background-color: #2b9ce6;
