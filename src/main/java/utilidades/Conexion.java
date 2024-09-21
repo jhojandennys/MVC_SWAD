@@ -3,9 +3,10 @@ package utilidades;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import io.github.cdimascio.dotenv.Dotenv;
+import java.nio.file.Paths;
 
 /**
  *
@@ -17,10 +18,13 @@ public class Conexion {
 
     public static Connection conecta() {
         try {
+            Dotenv dotenv = Dotenv.configure()
+                    .directory("")
+                    .load();
+            String usr = dotenv.get("user");
+            String psw = dotenv.get("password");
+            String url = dotenv.get("url");
             Class.forName("com.mysql.cj.jdbc.Driver");
-            String usr = "root";
-            String psw = "977966335";
-            String url = "jdbc:mysql://localhost:3307/bdcamas?useSSL=false";
             cnx = DriverManager.getConnection(url, usr, psw);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
