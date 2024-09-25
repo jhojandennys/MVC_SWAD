@@ -43,12 +43,14 @@ public class Categoria {
 
     // Método para crear una categoría
     public int createCategory(String nombre, String descripcion, String usuCreador) {
-        if (nombre == null || nombre.isEmpty() || descripcion == null || descripcion.isEmpty()) {
-            System.out.println("El nombre o la descripción no pueden estar vacíos.");
+        // Validación de campos
+        String validationMessage = validateInputs(nombre, descripcion);
+        if (validationMessage != null) {
+            System.out.println(validationMessage);
             return 0;
         }
 
-        String query = "INSERT INTO categorias (nombre, descripcion,usuarioCreador,usuarioModificador) VALUES (?, ?,?,?)";
+        String query = "INSERT INTO categorias (nombre, descripcion, usuarioCreador, usuarioModificador) VALUES (?, ?, ?, ?)";
 
         try (Connection cnx = new Conexion().conecta(); PreparedStatement sentencia = cnx.prepareStatement(query)) {
 
@@ -56,9 +58,15 @@ public class Categoria {
             sentencia.setString(2, descripcion);
             sentencia.setString(3, usuCreador);
             sentencia.setString(4, usuCreador);
-            int filasInsertadas = sentencia.executeUpdate();
 
-            return filasInsertadas > 0 ? 1 : 0;
+            int filasInsertadas = sentencia.executeUpdate();
+            if (filasInsertadas > 0) {
+                System.out.println("Categoría creada con éxito.");
+                return 1;
+            } else {
+                System.out.println("No se pudo crear la categoría.");
+                return 0;
+            }
 
         } catch (SQLException e) {
             System.out.println("Error en createCategory: " + e.getMessage());
@@ -107,7 +115,29 @@ public class Categoria {
         }
     }
 
-    // Método para obtener una categoría por su ID
+    public Categoria getCategoryByName(String name) {
+        String query = "SELECT * FROM Categorias WHERE nombre=?";
+        Categoria cat = null;
+
+        try (Connection cnx = new Conexion().conecta(); PreparedStatement sentencia = cnx.prepareStatement(query)) {
+
+            sentencia.setString(1, name);
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
+                    cat = new Categoria();
+                    cat.setId(resultado.getLong("id"));
+                    cat.setNombre(resultado.getString("nombre"));
+                    cat.setDescripcion(resultado.getString("descripcion"));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error en getCategoryByName: " + e.getMessage());
+        }
+
+        return cat;
+    }
+
     public Categoria getCategoryById(Long id) {
         String query = "SELECT * FROM categorias WHERE id=?";
         Categoria cat = null;
@@ -129,6 +159,16 @@ public class Categoria {
         }
 
         return cat;
+    }
+
+    private String validateInputs(String nombre, String descripcion) {
+        if (nombre == null || nombre.isEmpty() || nombre.length() > 50) {
+            return "El nombre no puede estar vacío y debe tener un máximo de 50 caracteres.";
+        }
+        if (descripcion == null || descripcion.isEmpty() || descripcion.length() > 200) {
+            return "La descripción no puede estar vacía y debe tener un máximo de 200 caracteres.";
+        }
+        return null;
     }
 
     // Getters y setters

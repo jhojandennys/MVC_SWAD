@@ -12,6 +12,7 @@ import java.sql.Statement;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import utilidades.Conexion;
 
 /**
@@ -34,24 +35,40 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario authenticate(String email, String psw) {
+     public Usuario authenticate(String email, String psw) {
         Usuario logueado = new Usuario();
+
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+
+        if (!Pattern.matches(emailRegex, email)) {
+            System.out.println("Correo electrónico no válido.");
+            return logueado;
+        }
+
+        if (!Pattern.matches(passwordRegex, psw)) {
+            System.out.println("Contraseña no válida.");
+            return logueado;
+        }
+
         try {
             Connection cnx = Conexion.conecta();
-            String query = "SELECT e.*, r.nombre as nombreRol FROM Empleados e INNER JOIN Roles r on e.idRol = r.id WHERE e.correo = ?  AND e.contra = ?";
+            String query = "SELECT e.*, r.nombre as nombreRol FROM Empleados e INNER JOIN Roles r on e.idRol = r.id WHERE e.correo = ? AND e.contra = ?";
             PreparedStatement sentencia = cnx.prepareStatement(query);
             sentencia.setString(1, email);
             sentencia.setString(2, psw);
             ResultSet resultado = sentencia.executeQuery();
             Rol rolN = new Rol();
             rolN.setId(Long.valueOf("-1"));
+
             if (resultado.next()) {
                 logueado.setId(resultado.getLong("id"));
                 rolN.setId(Long.valueOf(resultado.getString("idRol")));
-                System.out.println("Usuario autenticado Correctamente: " + email);
+                System.out.println("Usuario autenticado correctamente: " + email);
             } else {
                 rolN.setId(Long.valueOf("0"));
             }
+
             logueado.setRol(rolN);
             resultado.close();
             sentencia.close();
@@ -79,8 +96,28 @@ public class Usuario {
         }
 
         // Verificar que el DNI tenga exactamente 8 dígitos
-        if (dni.length() != 8 || !dni.matches("\\d+")) {
+        if (dni.length() != 8 || !dni.matches("\\d{8}")) {
             System.out.println("Error: El DNI debe tener exactamente 8 dígitos.");
+            return 0;
+        }
+
+        // Validar el correo
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        if (!Pattern.matches(emailRegex, correo)) {
+            System.out.println("Error: Correo electrónico no válido.");
+            return 0;
+        }
+
+        // Validar la contraseña
+        String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        if (!Pattern.matches(passwordRegex, contra)) {
+            System.out.println("Error: La contraseña debe tener al menos 8 caracteres, incluyendo al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.");
+            return 0;
+        }
+
+        // Validar el teléfono (9 dígitos)
+        if (telefono.length() != 9 || !telefono.matches("\\d{9}")) {
+            System.out.println("Error: El teléfono debe tener exactamente 9 dígitos.");
             return 0;
         }
 
@@ -89,6 +126,7 @@ public class Usuario {
         PreparedStatement selectStmt = null;
         ResultSet rs = null;
         int filasInsertadas = 0;
+
         try {
             Conexion c = new Conexion();
             cnx = c.conecta();
@@ -175,20 +213,20 @@ public class Usuario {
     public int editUser(int id, String dni, String nombres, String correo, String contra,
             String apePaterno, String apeMaterno, String telefono, int idRol, int idEstado) {
         // Validación de campos
-        if (dni == null || dni.trim().isEmpty() || dni.length() > 8) {
-            System.out.println("El DNI no debe estar vacío y debe tener un máximo de 8 dígitos.");
+        if (dni == null || dni.trim().isEmpty() || dni.length() != 8) {
+            System.out.println("El DNI debe tener exactamente 8 dígitos.");
             return 0;
         }
         if (nombres == null || nombres.trim().isEmpty()) {
             System.out.println("El nombre no debe estar vacío.");
             return 0;
         }
-        if (correo == null || correo.trim().isEmpty()) {
-            System.out.println("El correo no debe estar vacío.");
+        if (correo == null || correo.trim().isEmpty() || !correo.matches("^[\\w-.]+@[\\w-]+\\.[a-zA-Z]{2,}$")) {
+            System.out.println("El correo no debe estar vacío y debe ser un correo válido.");
             return 0;
         }
-        if (contra == null || contra.trim().isEmpty()) {
-            System.out.println("La contraseña no debe estar vacía.");
+        if (contra == null || contra.trim().isEmpty() || !contra.matches("(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+]).{8,}")) {
+            System.out.println("La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.");
             return 0;
         }
         if (apePaterno == null || apePaterno.trim().isEmpty()) {
@@ -199,8 +237,8 @@ public class Usuario {
             System.out.println("El apellido materno no debe estar vacío.");
             return 0;
         }
-        if (telefono == null || telefono.trim().isEmpty()) {
-            System.out.println("El teléfono no debe estar vacío.");
+        if (telefono == null || telefono.trim().isEmpty() || !telefono.matches("\\d{9}")) {
+            System.out.println("El teléfono debe tener exactamente 9 dígitos.");
             return 0;
         }
 
@@ -275,6 +313,10 @@ public class Usuario {
 
     public Usuario getUserByDni(String dni) {
         Usuario usr = new Usuario();
+        if (dni.length() != 8 || !dni.matches("\\d{8}")) {
+            System.out.println("Error: El DNI debe tener exactamente 8 dígitos.");
+            return null;
+        }
         try {
             Conexion c = new Conexion();
             Connection cnx = c.conecta();
