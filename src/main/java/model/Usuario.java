@@ -9,7 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -35,43 +34,69 @@ public class Usuario {
     public Usuario() {
     }
 
-     public Usuario authenticate(String email, String psw) {
+    public Usuario authenticate(String email, String psw) {
         Usuario logueado = new Usuario();
-
+        Rol rolN = new Rol();
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
 
+        // Validación del formato del correo electrónico
         if (!Pattern.matches(emailRegex, email)) {
             System.out.println("Correo electrónico no válido.");
+            rolN.setId(Long.valueOf("-1"));
+            logueado.setRol(rolN);
             return logueado;
         }
 
+        // Validación del formato de la contraseña
         if (!Pattern.matches(passwordRegex, psw)) {
             System.out.println("Contraseña no válida.");
+            rolN.setId(Long.valueOf("-2"));
+            logueado.setRol(rolN);
             return logueado;
         }
 
         try {
             Connection cnx = Conexion.conecta();
-            String query = "SELECT e.*, r.nombre as nombreRol FROM Empleados e INNER JOIN Roles r on e.idRol = r.id WHERE e.correo = ? AND e.contra = ?";
-            PreparedStatement sentencia = cnx.prepareStatement(query);
-            sentencia.setString(1, email);
-            sentencia.setString(2, psw);
-            ResultSet resultado = sentencia.executeQuery();
-            Rol rolN = new Rol();
-            rolN.setId(Long.valueOf("-1"));
 
-            if (resultado.next()) {
-                logueado.setId(resultado.getLong("id"));
-                rolN.setId(Long.valueOf(resultado.getString("idRol")));
+            // Primero verificamos si el correo está registrado
+            String queryEmail = "SELECT e.*, r.nombre as nombreRol FROM Empleados e INNER JOIN Roles r on e.idRol = r.id WHERE e.correo = ?";
+            PreparedStatement sentenciaEmail = cnx.prepareStatement(queryEmail);
+            sentenciaEmail.setString(1, email);
+            ResultSet resultadoEmail = sentenciaEmail.executeQuery();
+
+            if (!resultadoEmail.next()) {
+                // Si el correo no está registrado, devolvemos -1
+                rolN.setId(Long.valueOf("-1"));
+                logueado.setRol(rolN);
+                System.out.println("Correo no registrado.");
+                resultadoEmail.close();
+                sentenciaEmail.close();
+                cnx.close();
+                return logueado;
+            }
+
+            // Si el correo está registrado, verificamos la contraseña
+            String queryPassword = "SELECT e.*, r.nombre as nombreRol FROM Empleados e INNER JOIN Roles r on e.idRol = r.id WHERE e.correo = ? AND e.contra = ?";
+            PreparedStatement sentenciaPassword = cnx.prepareStatement(queryPassword);
+            sentenciaPassword.setString(1, email);
+            sentenciaPassword.setString(2, psw);
+            ResultSet resultadoPassword = sentenciaPassword.executeQuery();
+
+            if (resultadoPassword.next()) {
+                // Si el correo y la contraseña son correctos, devolvemos los datos del usuario
+                logueado.setId(resultadoPassword.getLong("id"));
+                rolN.setId(Long.valueOf(resultadoPassword.getString("idRol")));
                 System.out.println("Usuario autenticado correctamente: " + email);
             } else {
-                rolN.setId(Long.valueOf("0"));
+                // Si la contraseña es incorrecta, devolvemos -2
+                rolN.setId(Long.valueOf("-2"));
+                System.out.println("Contraseña incorrecta.");
             }
 
             logueado.setRol(rolN);
-            resultado.close();
-            sentencia.close();
+            resultadoPassword.close();
+            sentenciaPassword.close();
             cnx.close();
 
             return logueado;

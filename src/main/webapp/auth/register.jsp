@@ -40,7 +40,7 @@
                     <input type="submit" class="mt-4 transition-all duration-500 cursor-pointer bg-primario-400 hover:bg-primario-200 rounded-sm 
                            p-2 text-white font-semibold" value="Registrar"> 
                     <p class="text-sm -mt-2 text-white text-center">Ya tienes una cuenta? 
-                        <a class="text-blue-600 transition-all duration-500 font-semibold hover:text-green-600" href="login.jsp">Inicia Sesión</a>
+                        <a class="text-blue-600 transition-all duration-500 font-semibold hover:text-green-600" href="/auth/login.jsp">Inicia Sesión</a>
                     </p>
                 </form>
             </div>

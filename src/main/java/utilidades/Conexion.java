@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import io.github.cdimascio.dotenv.Dotenv;
-import java.nio.file.Paths;
 
 /**
  *
