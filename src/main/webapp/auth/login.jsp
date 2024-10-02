@@ -14,14 +14,14 @@
                 color: #FF2323;
             }
         </style>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 var email = document.getElementById("email");
                 var password = document.getElementById("password");
-
                 var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
                 var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
                 // Validar en tiempo real el correo
                 email.addEventListener("input", function () {
                     if (emailRegex.test(email.value)) {
@@ -30,7 +30,6 @@
                         email.classList.add('error-input');
                     }
                 });
-
                 // Validar en tiempo real la contraseña
                 password.addEventListener("input", function () {
                     if (passwordRegex.test(password.value)) {
@@ -75,10 +74,21 @@
                     password.classList.add('error-input');
                     valid = false;
                 }
-
+                const response = grecaptcha.getResponse();
+                if (response.length === 0) {
+                    Toastify({
+                        text: "Por favor completa el CAPTCHA.",
+                        duration: 1500,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "#FF5733",
+                    }).showToast();
+                    valid = false;
+                }
                 return valid;
             }
         </script>
+        <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfcDFUqAAAAAB9zMSm9CD0Fot9AMTo8jIjMkyqL"></script>
     </head>
     <body class="min-h-screen">
         <main class="min-h-screen w-full bg-image flex-col gap-6 flex justify-center items-center px-3">
@@ -102,7 +112,7 @@
                                type="text" id="email" name="correo"  
                                placeholder="juanperez07@gmail.com" 
                                value="${correo != null ? correo : ''}"
-                        >
+                               >
                     </div>
                     <div class="flex gap-2 flex-col relative">
                         <label for="password" class="text-white">Contraseña</label>
@@ -111,6 +121,10 @@
                                value="${pass != null ? pass : ''}"
                                >
                     </div>
+                    <div class="flex justify-center">
+                        <div class="g-recaptcha" name="g-recaptcha-response" data-sitekey="6Lege1QqAAAAACWLLIf7MthI2GcHqIl3nhdQw0-M" data-action="LOGIN"></div>
+                    </div>
+
                     <p class="text-sm text-blue-200">
                         <a href="forgot-password.jsp"
                            class="text-blue-600 transition-all duration-500 font-semibold hover:text-green-600">
@@ -130,5 +144,4 @@
             </div>
         </main>
     </body>
-</html>
 </html>

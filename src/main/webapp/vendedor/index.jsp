@@ -1,7 +1,7 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    if (session.getAttribute("userlog") != null) {
+    if (session.getAttribute("userlog") != null && session.getAttribute("userlog").toString().equals("2")) {
 %>
 <!DOCTYPE html >
 <html>
@@ -45,7 +45,7 @@
                     <button style="all:unset;" onclick="clickLogButton()">
                         <i class="fa-solid  fa-user text-2xl text-white cursor-pointer hover:text-black transition-all duration-500"></i>
                     </button>
-                    <form method="post" action="/Auth?accion=cerrar" id="logbutton"  class="hidden absolute bg-white text-black right-0 z-50 text-lg top-12 w-40 flex flex-col">
+                    <form method="post" action="/auth?accion=cerrar" id="logbutton"  class="hidden absolute bg-white text-black right-0 z-50 text-lg top-12 w-40 flex flex-col">
                         <button class=" transition-all text-center duration-500 w-full hover:text-white hover:bg-black
                                 py-2  font-semibold"  >Cerrar Sesion</button>
                     </form>
@@ -81,12 +81,12 @@
                     <li class="pr-8 relative">
                         <a class="text-secondary-300 font-semibold transition-all duration-500 flex items-center gap-3 md:justify-start
                            w-full hover:bg-secondary-900  rounded-r-3xl  hover:text-white py-2.5 pr-2 pl-4
-                           <% if (pagina != null && pagina.equals("vender")) { %>
+                           <% if (pagina != null && pagina.equals("ventas")) { %>
                            before:absolute before:w-1 before:content-[''] bg-secondary-900 before:h-full before:inline-block before:left-0 before:top-0 before:bg-blue-600 text-white bg-primary-900
                            <%}%>"
-                           href="/vendedor?pagina=vender">
+                           href="/vendedor?pagina=ventas">
                             <i class="fa-solid fa-cash-register text-white"></i>
-                            <span class="font-sans salto md:max-w-40 xl:max-w-full ">Vender</span>
+                            <span class="font-sans salto md:max-w-40 xl:max-w-full ">Ventas</span>
                         </a>
                     </li>
                     <li class="pr-8 relative">

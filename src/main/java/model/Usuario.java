@@ -12,6 +12,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.mindrot.jbcrypt.BCrypt;
 import utilidades.Conexion;
 
 /**
@@ -59,7 +60,7 @@ public class Usuario {
         try {
             Connection cnx = Conexion.conecta();
 
-            // Primero verificamos si el correo está registrado
+            // Verificamos si el correo está registrado
             String queryEmail = "SELECT e.*, r.nombre as nombreRol FROM Empleados e INNER JOIN Roles r on e.idRol = r.id WHERE e.correo = ?";
             PreparedStatement sentenciaEmail = cnx.prepareStatement(queryEmail);
             sentenciaEmail.setString(1, email);
@@ -76,27 +77,33 @@ public class Usuario {
                 return logueado;
             }
 
-            // Si el correo está registrado, verificamos la contraseña
-            String queryPassword = "SELECT e.*, r.nombre as nombreRol FROM Empleados e INNER JOIN Roles r on e.idRol = r.id WHERE e.correo = ? AND e.contra = ?";
-            PreparedStatement sentenciaPassword = cnx.prepareStatement(queryPassword);
-            sentenciaPassword.setString(1, email);
-            sentenciaPassword.setString(2, psw);
-            ResultSet resultadoPassword = sentenciaPassword.executeQuery();
+            // Si el correo está registrado, obtenemos el hash de la contraseña
+            String hashPassword = resultadoEmail.getString("contra");
 
-            if (resultadoPassword.next()) {
-                // Si el correo y la contraseña son correctos, devolvemos los datos del usuario
-                logueado.setId(resultadoPassword.getLong("id"));
-                rolN.setId(Long.valueOf(resultadoPassword.getString("idRol")));
+            // Verificamos la contraseña
+            if (BCrypt.checkpw(psw, hashPassword)) {
+                // Si la contraseña es correcta, devolvemos los datos del usuario
+                logueado.setId(resultadoEmail.getLong("id"));
+                rolN.setId(Long.valueOf(resultadoEmail.getString("idRol")));
                 System.out.println("Usuario autenticado correctamente: " + email);
+                String insertSession = "INSERT INTO HistorialSesion (idEmpleado, ip, usuarioCreador, usuarioModificador) VALUES (?, ?, ?, ?)";
+                PreparedStatement sentenciaSession = cnx.prepareStatement(insertSession);
+                sentenciaSession.setLong(1, logueado.getId());
+                sentenciaSession.setString(2, ""); // IP del cliente
+                sentenciaSession.setLong(3, logueado.getId());
+                sentenciaSession.setLong(4, logueado.getId());
+                sentenciaSession.executeUpdate();
+                sentenciaSession.close();
             } else {
                 // Si la contraseña es incorrecta, devolvemos -2
                 rolN.setId(Long.valueOf("-2"));
                 System.out.println("Contraseña incorrecta.");
             }
+            System.out.println("ROLN "+rolN.getId());
 
             logueado.setRol(rolN);
-            resultadoPassword.close();
-            sentenciaPassword.close();
+            resultadoEmail.close();
+            sentenciaEmail.close();
             cnx.close();
 
             return logueado;
@@ -107,7 +114,9 @@ public class Usuario {
     }
 
     public int createUser(String dni, String nombres, String correo, String contra,
-            String apePaterno, String apeMaterno, String telefono, int idRol, int usuCreador) {
+            String apePaterno, String apeMaterno, String telefono, int idRol,
+            int usuCreador
+    ) {
         // Verificar que los campos no sean vacíos
         if (dni == null || dni.trim().isEmpty()
                 || nombres == null || nombres.trim().isEmpty()
@@ -145,7 +154,8 @@ public class Usuario {
             System.out.println("Error: El teléfono debe tener exactamente 9 dígitos.");
             return 0;
         }
-
+        String hashedPassword = BCrypt.hashpw(contra, BCrypt.gensalt());
+        System.out.println("HASHEED :" + hashedPassword);
         Connection cnx = null;
         PreparedStatement insertStmt = null;
         PreparedStatement selectStmt = null;
@@ -164,7 +174,7 @@ public class Usuario {
             insertStmt.setString(2, apePaterno);
             insertStmt.setString(3, apeMaterno);
             insertStmt.setString(4, correo);
-            insertStmt.setString(5, contra);
+            insertStmt.setString(5, hashedPassword);
             insertStmt.setString(6, telefono);
             insertStmt.setInt(7, idRol);
             insertStmt.setInt(8, 1); // idEstado, asumido como valor constante

@@ -187,7 +187,7 @@ public class Producto {
         return null;
     }
 
-    public List<Producto> getProductosByCategoriaId(int idCategoria) {
+    public List<Producto> getProductosByCategoriaId(Long idCategoria) {
         List<Producto> productos = new ArrayList<>();
         String sql = "SELECT p.id, p.nombre, p.descripcion, p.precioCompra, p.precioVenta, "
                 + "c.nombre AS categoria, e.nombre AS estado, pr.empresa AS proveedor, "
@@ -200,7 +200,7 @@ public class Producto {
         Conexion c = new Conexion();
         Connection cnx = c.conecta();
         try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
-            stmt.setInt(1, idCategoria);
+            stmt.setLong(1, idCategoria);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Producto producto = new Producto();
