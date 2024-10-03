@@ -1,7 +1,7 @@
 <%-- 
     Document   : detalleProducto
     Created on : 21 set. 2024, 00:12:55
-    Author     : Chavez
+    Author     : Estudiantes
 --%>
 
 <title>Detalles del Producto</title>

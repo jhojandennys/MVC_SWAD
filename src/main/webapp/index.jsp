@@ -12,7 +12,7 @@
             String pagina = request.getParameter("pagina");
         %> 
         <header class="bg-primario w-full h-24  top-0 fixed z-50 ">
-            <div class="container max-w-[1200px] h-full flex justify-between p-2 md:p-4 items-center  ">
+            <div class="container max-w-[1200px] h-full flex justify-between p-2 md:p-4 items-center">
                 <a class="w-28 xs:w-32 text-3xl text-white md:w-40" href="?pagina=inicio">
                     Dayanara
                 </a>
@@ -44,6 +44,7 @@
                                py-2  font-semibold" href="/auth/login.jsp">Iniciar Sesion</a>
                         </div>
                     </div>
+
                     <div class="overflow-hidden lg:hidden">
                         <button id="showNav" class="hover:text-black text-white text-3xl flex">
                             <i class="fa-solid fa-bars"></i>
@@ -72,11 +73,8 @@
                         </nav>
                         <div class="overlay w-screen z-0 min-h-screen top-0 left-0 absolute bg-black opacity-40  transition-all duration-500 hidden">
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
         </header>
         <main class=" md:pt-24 ">
@@ -91,7 +89,6 @@
             } else if (pagina != null && pagina.equals("productos")) {
             %>  <%@include file = "/productos.jsp" %><%
                 }%>
-
         </main>
         <footer class="bg-primario py-5 px-2 px-md-0">
             <div
@@ -168,14 +165,14 @@
                 </div>
             </div>
         </footer>
-         <button class="text-white rounded-full w-12 h-12 md:w-16 md:h-16 flex justify-center items-center text-center bg-primary-300 text-xl md:text-3xl fixed z-20 
-                  right-4 bottom-4 cursor-pointer transition-all duration-500">
-              <i class="fa-solid fa-cart-shopping"></i>
-          </button>
-       <!--  <button class="text-white rounded-full w-12 h-12 md:w-16 md:h-16 flex justify-center items-center bg-green-500 text-2xl md:text-4xl fixed z-20  right-4 
-                bottom-20 cursor-pointer transition-all duration-500 md:bottom-24">
-            <i class="fa-brands fa-whatsapp"></i>
-        </button>-->
+        <button class="text-white rounded-full w-12 h-12 md:w-16 md:h-16 flex justify-center items-center text-center bg-primary-300 text-xl md:text-3xl fixed z-20 
+                right-4 bottom-4 cursor-pointer transition-all duration-500">
+            <i class="fa-solid fa-cart-shopping"></i>
+        </button>
+        <!--  <button class="text-white rounded-full w-12 h-12 md:w-16 md:h-16 flex justify-center items-center bg-green-500 text-2xl md:text-4xl fixed z-20  right-4 
+                 bottom-20 cursor-pointer transition-all duration-500 md:bottom-24">
+             <i class="fa-brands fa-whatsapp"></i>
+         </button>-->
     </div>
     <script>
         const navbutton = document.getElementById('showNav');

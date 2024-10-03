@@ -4,21 +4,8 @@
     <title>Inicio</title>
 </head>
 
-<!--<div class="banner h-[19.5rem] md:h-[30rem] xl:h-[35rem] 2xl:h-[40rem] flex items-center text-center relative z-0 ">
-    <div class="absolute bg-black opacity-35 -z-20 w-full h-full"></div>
-    <div class="container z-10 p-8 mx-auto">
-        <div class="flex gap-2 flex-col justify-center content-start md:w-1/2">
-            <h1 class="text-white text-3xl md:text-5xl lg:text-6xl 2xl:text-7xl font-bold">Bienvenido a Animalia Vet</h1>
-            <div class="flex gap-2 justify-center z-2">
-                <a href="/" class="border border-black px-2 py-0.5 transition-all hover:bg-black   hover:text-white md:text-xl">Nuestra Sede</a>
-                <a href="/" class="border border-transparent back  bg-orange-500 px-2 py-0.5 transition-all hover:bg-orange-600 md:text-xl">Productos</a>
-            </div>
-        </div>
-    </div>
-</div>-->
-
 <div class="bg-primario">
-    <div class="hero  ">
+    <div class="hero">
         <div class="min-h-[280px] flex items-center container-fluid w-auto mx-auto">
             <div class=" flex w-full lg:flex-row justify-beetwen">
                 <div class="w-full flex flex-col lg:flex-row pt-8 px-4 ">
@@ -36,7 +23,6 @@
                         <div class="flex gap-2 items-center">
                             <a href="?pagina=productos" class="bg-secundario hover:bg-secundario-500 transition-all duration-500 px-8 py-3 rounded-full cursor-pointer">Comprar Ahora</a>
                             <a href="?pagina=contactanos" class="border-2 border-gray-400 px-8 py-3 rounded-full text-gray-400 hover:text-white hover:border-white transition-all duration-500 ">Contáctanos</a>
-                            </p>
                         </div>
                     </div>
 
@@ -48,6 +34,7 @@
         </div>
     </div>
 </div>
+
 <section class="py-4 container-fluid mx-auto text-center"> 
     <section class="features-area section_gap">
         <div class="grid grid-rows-4 md:grid-rows-2 md:grid-cols-2 lg:grid-cols-4 lg:grid-rows-1 features-inner mx-auto">
@@ -88,8 +75,8 @@
                 </div>
             </div>
         </div>
-    </section>
-
+        </section>
+    
     <div>
         <h2 class="text-primario font-semibold text-2xl md:text-4xl">
             Elaborado con excelente material.

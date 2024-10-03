@@ -45,7 +45,7 @@
                     <button style="all:unset;" onclick="clickLogButton()">
                         <i class="fa-solid  fa-user text-2xl text-white cursor-pointer hover:text-black transition-all duration-500"></i>
                     </button>
-                    <form method="post" action="/Auth?accion=cerrar" id="logbutton"  class="hidden absolute bg-white text-black right-0 z-50 text-lg top-12 w-40 flex flex-col">
+                    <form method="post" action="/auth?accion=cerrar" id="logbutton"  class="hidden absolute bg-white text-black right-0 z-50 text-lg top-12 w-40 flex flex-col">
                         <button class=" transition-all text-center duration-500 w-full hover:text-white hover:bg-black
                                 py-2  font-semibold"  >Cerrar Sesion</button>
                     </form>
@@ -122,8 +122,7 @@
                             <span class="font-sans salto md:max-w-40 xl:max-w-full ">Envios</span>
                         </a>
                     </li>
-                    
-                    
+                                     
                 </ul>
             </aside>
                <div class="bg-neutral-300 p-4 w-full md:w-[calc(100%-16rem)]">

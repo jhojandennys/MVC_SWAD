@@ -64,11 +64,11 @@ public class TestsClase {
     }
 
     //TEST 2
-    // @Test
+    //@Test
     public void testCrearUsuario() {
         System.out.println("Iniciando prueba de inserción de usuario...");
 
-        String dni = "55552123";
+        String dni = "55552128";
         String nombres = "Kelvin Trucho";
         String correo = "kelvin.lucana@gmail.com";
         String contra = "Abcd1234$";
@@ -87,7 +87,6 @@ public class TestsClase {
         assertEquals("El resultado de la creación del usuario no es el esperado. Verifica los parámetros de entrada y el estado de la base de datos.", expResult, result);
 
         System.out.println("Prueba de inserción completada.");
-
     }
 
     //TEST 3
@@ -123,8 +122,8 @@ public class TestsClase {
     //TEST 4
     //@Test
     public void testCrearCategoria() {
-        String descripcion = "123948578";
-        String nombre = "calapuja.industries@gmail.com";
+        String descripcion = "Ultimo en tendencias de almohadas";
+        String nombre = "almohadas";
 
         Categoria instance = new Categoria();
 

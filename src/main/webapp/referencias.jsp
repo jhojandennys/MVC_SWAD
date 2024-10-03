@@ -157,22 +157,7 @@
         border-radius: 20px!important;
         width: 5px;
     }
-    /**CALENDARIO**/
-    .rbc-header {
-        background-color: #2b9ce6;
-        height: 4rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-weight: 400 !important;
-        font-size: 20px !important;
-    }
-    /*TABLA CITAS*/
-    .scroll-y-tabla::-webkit-scrollbar {
-        background-color: #4b5063;
-        width: 5px;
-    }
+
     .scroll-y-tabla::-webkit-scrollbar-thumb {
         background: #0178c7;
         border-radius: 20px;
@@ -223,26 +208,18 @@
         height: 5px;
         width: 5px;
     }
-    .banner {
-        background: url("./images/bg-inicio.webp");
-        background-size: cover;
-        background-position: center center;
-    }
+
     .container {
         width: 95%;
         max-width: 1200px;
         margin: 0 auto;
     }
-    .bgservicio {
-        background: url("./images/bg-mobile-img.png");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center center;
-    }
+
     .salto {
         overflow-wrap: break-word !important; /* Para navegadores modernos */
         word-wrap: break-word !important;
     }
+    
     @media screen and (min-width: 990px) {
         .bgservicio {
             background: url("./images/bg-desktop-img.jpg");
