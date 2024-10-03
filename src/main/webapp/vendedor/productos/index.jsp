@@ -1,3 +1,7 @@
+<%@page import="dao.EstadoProductoDAO"%>
+<%@page import="dao.ProveedorDAO"%>
+<%@page import="dao.CategoriaDAO"%>
+<%@page import="dao.ProductoDAO"%>
 <%@page import="model.EstadoProducto"%>
 <%@page import="model.Proveedor"%>
 <%@page import="model.Categoria"%>
@@ -19,16 +23,16 @@
     </style>
 </head>
 <%
-    Producto C = new Producto();
+    ProductoDAO C = new ProductoDAO();
     List<Producto> lista = new LinkedList<>();
     lista = C.getProducts();
-    Categoria CT = new Categoria();
+    CategoriaDAO CT = new CategoriaDAO();
     List<Categoria> categorias = new LinkedList<>();
     categorias = CT.getCategories();
-    Proveedor P = new Proveedor();
+    ProveedorDAO P = new ProveedorDAO();
     List<Proveedor> proveedores = new LinkedList<>();
     proveedores = P.getProveedores();
-    EstadoProducto EP = new EstadoProducto();
+    EstadoProductoDAO EP = new EstadoProductoDAO();
     List<EstadoProducto> estados = new LinkedList<>();
     estados = EP.getEstados();
 %>

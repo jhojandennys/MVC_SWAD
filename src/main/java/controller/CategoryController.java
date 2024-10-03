@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
+import dao.CategoriaDAO;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,12 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.Categoria;
 
-/**
- *
- * @author Chavez
- */
 @WebServlet(name = "Categories", urlPatterns = {"/Categories", "/Categories/add", "/Categories/edit", "/Categories/delete"})
 public class CategoryController extends HttpServlet {
 
@@ -63,7 +55,7 @@ public class CategoryController extends HttpServlet {
         String nombre = request.getParameter("nombre");
         String descripcion = request.getParameter("descripcion");
         System.out.println("***************AQUI ANTES DE CREAR***************");
-        Categoria cat = new Categoria();
+        CategoriaDAO cat = new CategoriaDAO();
         HttpSession sesion = request.getSession();
         String idModificador = sesion.getAttribute("idUsuario").toString();
         cat.createCategory(nombre, descripcion, idModificador);
@@ -76,7 +68,7 @@ public class CategoryController extends HttpServlet {
             throws ServletException, IOException {
         Long id = Long.valueOf(request.getParameter("id"));
         System.out.println("***************AQUI ANTES DE ELIMINAR***************");
-        Categoria rol = new Categoria();
+        CategoriaDAO rol = new CategoriaDAO();
         rol.deleteCategory(id);
         System.out.println("***************DESPUES DE ELIMINAR***************");
 
@@ -89,7 +81,7 @@ public class CategoryController extends HttpServlet {
         String nombre = request.getParameter("nombre");
         String descripcion = request.getParameter("descripcion");
         System.out.println("***************AQUI ANTES DE EDITAR***************");
-        Categoria cat = new Categoria();
+        CategoriaDAO cat = new CategoriaDAO();
         cat.editCategory(id, nombre, descripcion);
         System.out.println("***************DESPUES DE EDITAR***************");
 

@@ -1,3 +1,11 @@
+<%@page import="dao.UsuarioDAO"%>
+<%@page import="dao.ClienteDAO"%>
+<%@page import="dao.ProductoDAO"%>
+<%@page import="dao.TransporteDAO"%>
+<%@page import="dao.ProveedorDAO"%>
+<%@page import="dao.CompraDAO"%>
+<%@page import="dao.VentasDAO"%>
+<%@page import="dao.CategoriaDAO"%>
 <%@page import="model.Proveedor"%>
 <%@page import="model.Compra"%>
 <%@page import="model.Venta"%>
@@ -20,35 +28,35 @@
 </head>
 <%
 
-    Usuario U = new Usuario();
+    UsuarioDAO U = new UsuarioDAO();
     List<Usuario> usuarios = new LinkedList<>();
     usuarios = U.getUsers();
     
-    Cliente C = new Cliente();
+    ClienteDAO C = new ClienteDAO();
     List<Cliente> clientes = new LinkedList<>();
     clientes = C.getClientes();
     
-    Producto P = new Producto();
+    ProductoDAO P = new ProductoDAO();
     List<Producto> producto = new LinkedList<>();
     producto = P.getProducts();
     
-    Transporte T = new Transporte();
+    TransporteDAO T = new TransporteDAO();
     List<Transporte> transporte = new LinkedList<>();
     transporte = T.getTransportes();
     
-    Categoria Ca = new Categoria();
+    CategoriaDAO Ca = new CategoriaDAO();
     List<Categoria> categoria = new LinkedList<>();
     categoria = Ca.getCategories();
     
-    Venta V = new Venta();
+    VentasDAO V = new VentasDAO();
     List<Venta> venta = new LinkedList<>();
     venta = V.getVentas();
     
-    Compra Co = new Compra();
+    CompraDAO Co = new CompraDAO();
     List<Compra> compra = new LinkedList<>();
     compra = Co.getCompras();
     
-    Proveedor Pr = new Proveedor();
+    ProveedorDAO Pr = new ProveedorDAO();
     List<Proveedor> proveedor = new LinkedList<>();
     proveedor = Pr.getProveedores();
     

@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.UsuarioDAO;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -61,7 +62,7 @@ public class Autentica extends HttpServlet {
             return;
         }
 
-        Usuario usuario = new Usuario();
+        UsuarioDAO usuario = new UsuarioDAO();
         int resultado = usuario.createUser(dni, nombres, correo, password, apePat, apeMat, telefono, 1, 0); // Ajusta según tus requerimientos
 
         if (resultado > 0) {
@@ -78,6 +79,15 @@ public class Autentica extends HttpServlet {
         String correo = request.getParameter("correo");
         String password = request.getParameter("password");
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        String ipCliente = request.getHeader("X-Forwarded-For");
+
+        if (ipCliente == null || ipCliente.isEmpty() || "unknown".equalsIgnoreCase(ipCliente)) {
+            ipCliente = request.getRemoteAddr();
+        }
+
+        if ("0:0:0:0:0:0:0:1".equals(ipCliente)) {
+            ipCliente = "127.0.0.1";
+        }
 
         HttpSession sesion = request.getSession();
         Integer intentosFallidos = (Integer) sesion.getAttribute("intentosFallidos");
@@ -95,11 +105,11 @@ public class Autentica extends HttpServlet {
             return;
         }
 
-        Usuario cli = new Usuario().authenticate(correo, password);
+        Usuario cli = new UsuarioDAO().authenticate(correo, password, ipCliente);
 
         if (cli != null && cli.getRol().getId() > 0) { // Si el usuario está autenticado
             sesion.setAttribute("userlog", cli.getRol().getId().toString());
-            System.out.println("ROL"+cli.getRol().getId().toString());
+            System.out.println("ROL" + cli.getRol().getId().toString());
             sesion.setAttribute("idUsuario", cli.getId());
             sesion.setAttribute("intentosFallidos", 0); // Reinicia el contador de intentos fallidos
 

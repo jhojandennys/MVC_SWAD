@@ -1,5 +1,6 @@
-<%@page import="model.Stock"%>
+<%@page import="dao.StockDAO"%>
 <%@page import="model.Transporte"%>
+<%@page import="model.Stock"%>
 <%@page import="model.Producto"%>
 <%@page import="java.util.List, java.util.LinkedList" %>
 <head>
@@ -13,7 +14,7 @@
 
 </head>
 <%
-    Stock S = new Stock();
+    StockDAO S = new StockDAO();
     List<Stock> lista = new LinkedList<>();
     lista = S.getStock();
 %>

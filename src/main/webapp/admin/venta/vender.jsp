@@ -4,6 +4,8 @@
     Author     : Chavez
 --%>
 
+<%@page import="dao.ProductoDAO"%>
+<%@page import="dao.CategoriaDAO"%>
 <%@page import="model.Categoria"%>
 <%@page import="java.util.List"%>
 <%@page import="model.Producto"%>
@@ -14,10 +16,10 @@
     <title>Vender Productos</title>
 </head>
 <%
-    Producto P = new Producto();
+    ProductoDAO P = new ProductoDAO();
     List<Producto> lista = new LinkedList<>();
     lista = P.getProducts();
-    Categoria C = new Categoria();
+    CategoriaDAO C = new CategoriaDAO();
     List<Categoria> categorias = new LinkedList<>();
     categorias = C.getCategories();
 %>

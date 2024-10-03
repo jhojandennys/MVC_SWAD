@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.ProveedorDAO;
 import java.io.IOException;
 import java.sql.Date;
 import javax.servlet.ServletException;
@@ -72,7 +73,7 @@ public class ProveedorController extends HttpServlet {
         String email = request.getParameter("email");
 
         System.out.println("***************AQUI ANTES DE CREAR***************");
-        Proveedor prov = new Proveedor();
+        ProveedorDAO prov = new ProveedorDAO();
         prov.createProveedor(empresa,ruc,direccion,email,email);
         System.out.println("***************DESPUES DE CREAR***************");
         request.getRequestDispatcher("/admin/index.jsp?pagina=proveedor").forward(request, response);
@@ -83,7 +84,7 @@ public class ProveedorController extends HttpServlet {
         String id = request.getParameter("id");
 
         System.out.println("***************AQUI ANTES DE ELIMINAR***************");
-        Proveedor prov = new Proveedor();
+        ProveedorDAO prov = new ProveedorDAO();
        System.out.println("ID es: "+ id);
         prov.deleteProveedor(id);
         System.out.println("***************DESPUES DE ELIMINAR***************");
@@ -100,7 +101,7 @@ public class ProveedorController extends HttpServlet {
         String email = request.getParameter("email");
 
         System.out.println("***************AQUI ANTES DE EDITAR***************");
-        Proveedor prov = new Proveedor();
+        ProveedorDAO prov = new ProveedorDAO();
         prov.editProveedor(id, empresa, encargado,ruc,direccion,email);
         System.out.println("***************DESPUES DE EDITAR***************");
         request.getRequestDispatcher("/admin/index.jsp?pagina=proveedor").forward(request, response);

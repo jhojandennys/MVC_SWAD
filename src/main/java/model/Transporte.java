@@ -1,21 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import utilidades.Conexion;
-
-/**
- *
- * @author GianN
- */
 public class Transporte {
 
     private Long id;
@@ -25,35 +9,6 @@ public class Transporte {
     private String descripcion;
 
     public Transporte() {
-    }
-
-    public List<Transporte> getTransportes() {
-        List<Transporte> lista = new ArrayList<>();
-        try {
-            Conexion c = new Conexion();
-            Connection cnx = c.conecta();
-            String query = "SELECT * FROM BDCamas.Transporte";
-            Statement sentencia = cnx.createStatement();
-            ResultSet resultado = sentencia.executeQuery(query);
-
-            while (resultado.next()) {
-                Transporte tr = new Transporte();
-                tr.setId(resultado.getLong("id"));
-                tr.setDescripcion(resultado.getString("descripcion"));
-                tr.setMarca(resultado.getString("marca"));
-                tr.setModelo(resultado.getString("modelo"));
-                tr.setPlaca(resultado.getString("placa"));
-
-                lista.add(tr);
-            }
-
-            resultado.close();
-            sentencia.close();
-            cnx.close();
-        } catch (SQLException e) {
-            System.out.println("Error en getTransportes: " + e.getMessage());
-        }
-        return lista;
     }
 
     public Long getId() {

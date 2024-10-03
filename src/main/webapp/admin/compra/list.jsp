@@ -1,4 +1,5 @@
 
+<%@page import="dao.CompraDAO"%>
 <%@page import="model.Compra"%>
 
 
@@ -14,7 +15,7 @@
 
 </head>
 <%
-    Compra C = new Compra();
+    CompraDAO C = new CompraDAO();
     List<Compra> lista = new LinkedList<>();
     lista = C.getCompras();
 %>

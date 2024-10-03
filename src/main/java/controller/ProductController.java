@@ -1,5 +1,6 @@
 package controller;
 
+import dao.ProductoDAO;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -7,12 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.Producto;
 
-/**
- *
- * @author Estudiante
- */
 @WebServlet(name = "Producto", urlPatterns = {"/Producto", "/Producto/add", "/Producto/edit", "/Producto/delete"})
 public class ProductController extends HttpServlet {
 
@@ -91,7 +87,7 @@ public class ProductController extends HttpServlet {
         HttpSession sesion = request.getSession();
         if (sesion.getAttribute("userlog") != null) {
 
-            Producto prod = new Producto();
+            ProductoDAO prod = new ProductoDAO();
             prod.createProduct(nombre, descripcion, idCategoria,
                     idProveedor, idEstado, preciocompra,
                     precioventa, imagen
@@ -119,7 +115,7 @@ public class ProductController extends HttpServlet {
         String id = request.getParameter("id");
 
         System.out.println("***************AQUI ANTES DE ELIMINAR***************");
-        Producto prod = new Producto();
+        ProductoDAO prod = new ProductoDAO();
         prod.deleteProduct(id);
         System.out.println("***************DESPUES DE ELIMINAR***************");
         response.sendRedirect("/admin?pagina=producto");
@@ -138,7 +134,7 @@ public class ProductController extends HttpServlet {
         //  String imagen = request.getParameter("imagen");
         String imagen = "";
         System.out.println("***************AQUI ANTES DE EDITAR***************");
-        Producto prod = new Producto();
+        ProductoDAO prod = new ProductoDAO();
         HttpSession sesion = request.getSession();
         String idModificador = sesion.getAttribute("idUsuario").toString();
 

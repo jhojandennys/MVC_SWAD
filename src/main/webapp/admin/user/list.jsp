@@ -4,6 +4,8 @@
     Author     : Estudiante
 --%>
 
+<%@page import="dao.UsuarioDAO"%>
+<%@page import="dao.RolDAO"%>
 <%@page import="model.Rol"%>
 <%@page import="model.Usuario, java.util.List, java.util.LinkedList" %>
 <head>
@@ -17,10 +19,10 @@
 
 </head>
 <%
-    Usuario C = new Usuario();
+    UsuarioDAO C = new UsuarioDAO();
     List<Usuario> lista = new LinkedList<>();
     lista = C.getUsers();
-    Rol R = new Rol();
+    RolDAO R = new RolDAO();
     List<Rol> roles = new LinkedList<>();
     roles = R.getRols();
 %>

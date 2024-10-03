@@ -4,19 +4,14 @@
  */
 package controller;
 
+import dao.ClienteDAO;
 import java.io.IOException;
-import java.sql.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Cliente;
 
-/**
- *
- * @author Estudiante
- */
 @WebServlet(name = "Cliente", urlPatterns = {"/Cliente", "/Cliente/add", "/Cliente/edit", "/Cliente/delete"})
 public class ClienteController extends HttpServlet {
 
@@ -61,6 +56,7 @@ public class ClienteController extends HttpServlet {
                 break;
         }
     }
+
     private void handleAddCliente(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Aquí se maneja la lógica para agregar un usuario
@@ -71,11 +67,10 @@ public class ClienteController extends HttpServlet {
         String telf = request.getParameter("telefono");
         String direc = request.getParameter("direccion");
         String dni = request.getParameter("dni");
-       
 
         System.out.println("***************AQUI ANTES DE CREAR***************");
-        Cliente cl = new Cliente();
-        cl.createCliente(nombre, apellPaterno,apellMaterno,telf,direc,dni);
+        ClienteDAO cl = new ClienteDAO();
+        cl.createCliente(nombre, apellPaterno, apellMaterno, telf, direc, dni);
         System.out.println("***************DESPUES DE CREAR***************");
         request.getRequestDispatcher("/admin/index.jsp?pagina=cliente").forward(request, response);
     }
@@ -85,7 +80,7 @@ public class ClienteController extends HttpServlet {
         String id = request.getParameter("id");
 
         System.out.println("***************AQUI ANTES DE ELIMINAR***************");
-        Cliente cl = new Cliente();
+        ClienteDAO cl = new ClienteDAO();
         cl.deleteCliente(id);
         System.out.println("***************DESPUES DE ELIMINAR***************");
         request.getRequestDispatcher("/admin/index.jsp?pagina=cliente").forward(request, response);
@@ -93,9 +88,9 @@ public class ClienteController extends HttpServlet {
 
     private void handleEditCliente(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String id = request.getParameter("id");
-       String nombre = request.getParameter("nombre");
+        String nombre = request.getParameter("nombre");
         String apellPaterno = request.getParameter("apaterno");
         String apellMaterno = request.getParameter("amaterno");
         String telf = request.getParameter("telefono");
@@ -103,8 +98,8 @@ public class ClienteController extends HttpServlet {
         String dni = request.getParameter("dni");
 
         System.out.println("***************AQUI ANTES DE EDITAR***************");
-        Cliente cl = new Cliente();
-        cl.editCliente(id,nombre, apellPaterno,apellMaterno,telf,direc,dni);
+        ClienteDAO cl = new ClienteDAO();
+        cl.editCliente(id, nombre, apellPaterno, apellMaterno, telf, direc, dni);
         System.out.println("***************DESPUES DE EDITAR***************");
         request.getRequestDispatcher("/admin/index.jsp?pagina=cliente").forward(request, response);
     }

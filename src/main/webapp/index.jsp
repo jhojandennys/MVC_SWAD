@@ -19,19 +19,19 @@
                 <div class="flex gap-2 items-center">
                     <nav class="hidden lg:flex gap-5 mr-5 text-white ">
                         <a class="text-black hover:text-white font-semibold text-xl transition-all duration-500 flex justify-center items-center gap-2 md:justify-start" 
-                           href="?pagina=inicio">
+                           href="inicio">
                             <span class="font-sans salto md:max-w-40 xl:max-w-full <%if (pagina == null || pagina.equals("inicio")) { %> text-white <%}%>">Inicio</span>
                         </a>
                         <a class="text-black hover:text-white font-semibold text-xl transition-all duration-500
-                           flex justify-center items-center  gap-2 md:justify-start" href="?pagina=productos">
+                           flex justify-center items-center  gap-2 md:justify-start" href="productos">
                             <span class="font-sans salto md:max-w-40 xl:max-w-full <%if (pagina != null && pagina.equals("productos")) { %> text-white <%}%>">Productos</span>
                         </a>
                         <a class="text-black hover:text-white font-semibold text-xl transition-all duration-500 flex justify-center items-center  gap-2 md:justify-start" 
-                           href="?pagina=nosotros">
+                           href="nosotros">
                             <span class="font-sans salto md:max-w-40 xl:max-w-full <%if (pagina != null && pagina.equals("nosotros")) { %> text-white <%}%>">Nosotros</span>
                         </a>
                         <a class="text-black hover:text-white font-semibold text-xl transition-all duration-500 
-                           flex justify-center items-center  gap-2 md:justify-start" href="?pagina=contactanos">
+                           flex justify-center items-center  gap-2 md:justify-start" href="contactanos">
                             <span class="font-sans salto md:max-w-40 xl:max-w-full <%if (pagina != null && pagina.equals("contactanos")) { %> text-white <%}%>">Contáctanos</span>
                         </a>
                     </nav>
@@ -51,19 +51,19 @@
                         <nav id="navbar"  class="fixed min-h-screen top-0 right-0 bg-primary-300 flex flex-col max-w-96 duration-500
                              overflow-hidden w-full px-8 py-20 z-50 gap-3 translate-x-full ">
                             <a class="text-white hover:text-black font-semibold text-xl transition-all duration-500
-                               flex justify-center items-center  gap-2 md:justify-start" href="?pagina=inicio">
+                               flex justify-center items-center  gap-2 md:justify-start" href="inicio">
                                 <span class="font-sans salto md:max-w-40 xl:max-w-full <% if (pagina == null || pagina.equals("inicio")) { %> text-black <%}%>">Inicio</span>
                             </a>
                             <a class="text-white hover:text-black font-semibold text-xl transition-all duration-500 flex 
-                               justify-center items-center  gap-2 md:justify-start" href="?pagina=productos">
+                               justify-center items-center  gap-2 md:justify-start" href="productos">
                                 <span class="font-sans salto md:max-w-40 xl:max-w-full<% if (pagina != null && pagina.equals("productos")) { %> text-black <%}%>">Productos</span>
                             </a>
                             <a class="text-white hover:text-black font-semibold text-xl transition-all duration-500 flex
-                               justify-center items-center  gap-2 md:justify-start  " href="?pagina=nosotros">
+                               justify-center items-center  gap-2 md:justify-start  " href="nosotros">
                                 <span class="font-sans salto md:max-w-40 xl:max-w-full <% if (pagina != null && pagina.equals("nosotros")) { %> text-black <%}%>">Nosotros</span>
                             </a>
                             <a class="text-white hover:text-black font-semibold text-xl transition-all duration-500 flex
-                               justify-center items-center  gap-2 md:justify-start  " href="?pagina=contactanos">
+                               justify-center items-center  gap-2 md:justify-start  " href="contactanos">
                                 <span class="font-sans salto md:max-w-40 xl:max-w-full<% if (pagina != null && pagina.equals("contactanos")) { %> text-black <%}%>">Contáctanos</span>
                             </a>
                             <button id="closeNav" class="hover:text-black absolute transition-all duration-500 top-6 right-6 text-white text-3xl flex">
@@ -80,18 +80,7 @@
             </div>
         </header>
         <main class=" md:pt-24 ">
-            <%  if (pagina == null || pagina.equals("inicio")) {
-            %>  <%@include file = "/inicio.jsp" %><%
-            } else if (pagina != null && pagina.equals("nosotros")) {
-            %>  <%@include file = "/nosotros.jsp" %><%
-            } else if (pagina != null && pagina.equals("contactanos")) {
-            %>  <%@include file = "/contactanos.jsp" %><%
-            } else if (pagina != null && pagina.equals("detalle")) {
-            %>  <%@include file = "/detalleProducto.jsp" %><%
-            } else if (pagina != null && pagina.equals("productos")) {
-            %>  <%@include file = "/productos.jsp" %><%
-                }%>
-
+ 
         </main>
         <footer class="bg-primario py-5 px-2 px-md-0">
             <div
@@ -141,26 +130,26 @@
                             <a
                                 class="selected nav-link py-1 f-link hover:text-secundario transition-all duration-500  
                                 <%if (pagina == null || pagina.equals("inicio")) { %> text-secundario <%}%>"
-                                href="?pagina=inicio"
+                                href="inicio"
                                 >Inicio</a
                             >
                         </li>
                         <li>
                             <a
                                 class=" nav-link py-1 f-link hover:text-secundario transition-all duration-500  <%if (pagina != null && pagina.equals("productos")) { %> text-secundario <%}%>"
-                                href="?pagina=productos"
+                                href="productos"
                                 >Productos</a
                             >
                         </li>
                         <li>
                             <a class=" nav-link py-1 f-link hover:text-secundario transition-all duration-500   <%if (pagina != null && pagina.equals("nosotros")) { %> text-secundario <%}%>" 
-                               href="?pagina=nosotros"
+                               href="nosotros"
                                >Nosotros</a
                             >
                         </li>
                         <li>
                             <a class=" nav-link py-1 f-link hover:text-secundario transition-all duration-500  <%if (pagina != null && pagina.equals("contactanos")) { %> text-secundario <%}%>" 
-                               href="?pagina=contactanos"
+                               href="contactanos"
                                >Contáctanos</a
                             >
                         </li>
@@ -168,14 +157,14 @@
                 </div>
             </div>
         </footer>
-         <button class="text-white rounded-full w-12 h-12 md:w-16 md:h-16 flex justify-center items-center text-center bg-primary-300 text-xl md:text-3xl fixed z-20 
-                  right-4 bottom-4 cursor-pointer transition-all duration-500">
-              <i class="fa-solid fa-cart-shopping"></i>
-          </button>
-       <!--  <button class="text-white rounded-full w-12 h-12 md:w-16 md:h-16 flex justify-center items-center bg-green-500 text-2xl md:text-4xl fixed z-20  right-4 
-                bottom-20 cursor-pointer transition-all duration-500 md:bottom-24">
-            <i class="fa-brands fa-whatsapp"></i>
-        </button>-->
+        <button class="text-white rounded-full w-12 h-12 md:w-16 md:h-16 flex justify-center items-center text-center bg-primary-300 text-xl md:text-3xl fixed z-20 
+                right-4 bottom-4 cursor-pointer transition-all duration-500">
+            <i class="fa-solid fa-cart-shopping"></i>
+        </button>
+        <!--  <button class="text-white rounded-full w-12 h-12 md:w-16 md:h-16 flex justify-center items-center bg-green-500 text-2xl md:text-4xl fixed z-20  right-4 
+                 bottom-20 cursor-pointer transition-all duration-500 md:bottom-24">
+             <i class="fa-brands fa-whatsapp"></i>
+         </button>-->
     </div>
     <script>
         const navbutton = document.getElementById('showNav');

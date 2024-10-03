@@ -1,10 +1,4 @@
-<%-- 
-    Document   : listado
-    Created on : 14 oct. 2023, 09:59:54
-    Author     : Estudiante
---%>
-
-<%@page import="model.Categoria, java.util.List, java.util.LinkedList" %>
+<%@page import="model.Categoria,dao.CategoriaDAO, java.util.List, java.util.LinkedList" %>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Listado de Roles</title>        
@@ -16,7 +10,7 @@
 
 </head>
 <%
-    Categoria C = new Categoria();
+    CategoriaDAO C = new CategoriaDAO();
     List<Categoria> lista = new LinkedList<>();
     lista = C.getCategories();
 %>

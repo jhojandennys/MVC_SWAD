@@ -3,6 +3,7 @@
     Created on : 14 oct. 2023, 09:59:54
     Author     : Estudiante
 --%>
+<%@page import="dao.ClienteDAO"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@page import="model.Cliente, java.util.List, java.util.LinkedList" %>
 <head>
@@ -16,7 +17,7 @@
 
 </head>
 <%
-    Cliente C = new Cliente();
+    ClienteDAO C = new ClienteDAO();
     List<Cliente> lista = new LinkedList<>();
     lista = C.getClientes();
 %>

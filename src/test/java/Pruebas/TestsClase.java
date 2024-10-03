@@ -1,5 +1,7 @@
 package Pruebas;
 
+import dao.CategoriaDAO;
+import dao.UsuarioDAO;
 import java.sql.Connection;
 import java.util.List;
 import model.Categoria;
@@ -46,9 +48,9 @@ public class TestsClase {
     public void testAuthenticateInvalidEmailFormat() {
         String invalidEmail = "invalidemail.com";
         String validPassword = "ValidPass1!";
-        Usuario usuarioService = new Usuario();
+        UsuarioDAO usuarioService = new UsuarioDAO();
 
-        Usuario result = usuarioService.authenticate(invalidEmail, validPassword);
+        Usuario result = usuarioService.authenticate(invalidEmail, validPassword, "d");
 
         assertEquals("El ID de Rol debe ser -1 para un correo electrónico no válido.", Long.valueOf(-1L), result.getRol().getId());
     }
@@ -58,10 +60,10 @@ public class TestsClase {
         // Arrange
         String validEmail = "validemail@test.com";
         String invalidPassword = "weakpass"; // Contraseña sin caracteres especiales ni mayúsculas
-        Usuario usuarioService = new Usuario();
+        UsuarioDAO usuarioService = new UsuarioDAO();
 
         // Act
-        Usuario result = usuarioService.authenticate(validEmail, invalidPassword);
+        Usuario result = usuarioService.authenticate(validEmail, invalidPassword, "1");
 
         // Assert
         assertEquals("El ID de Rol debe ser -2 para una contraseña no válida.", Long.valueOf(-2L), result.getRol().getId());
@@ -72,10 +74,10 @@ public class TestsClase {
         // Arrange
         String unregisteredEmail = "unregistered@test.com";
         String validPassword = "ValidPass1!";
-        Usuario usuarioService = new Usuario();
+        UsuarioDAO usuarioService = new UsuarioDAO();
 
         // Act
-        Usuario result = usuarioService.authenticate(unregisteredEmail, validPassword);
+        Usuario result = usuarioService.authenticate(unregisteredEmail, validPassword, "1");
 
         // Assert
         assertEquals("El ID de Rol debe ser -1 para un correo no registrado.", Long.valueOf(-1L), result.getRol().getId());
@@ -88,13 +90,13 @@ public class TestsClase {
         String email = "luis.rodriguez@empresa.com";
         String psw = "Abcd1234$";
 
-        Usuario instance = new Usuario();
+        UsuarioDAO instance = new UsuarioDAO();
 
         // Resultado esperado
         int rolExperado = 3;
 
         // Ejecutar el método de autenticación
-        Usuario result = instance.authenticate(email, psw);
+        Usuario result = instance.authenticate(email, psw, "s");
         int rolRecibido = Integer.parseInt(result.getRol().getId().toString());
         // Comparar el resultado esperado con el resultado obtenido
         assertEquals("El resultado de la autenticación no es el esperado.", rolExperado, rolRecibido);
@@ -117,7 +119,7 @@ public class TestsClase {
         int usuCreador = 1;
         int idRol = 1;
 
-        Usuario instance = new Usuario();
+        UsuarioDAO instance = new UsuarioDAO();
 
         int expResult = 1;
 
@@ -147,7 +149,7 @@ public class TestsClase {
         int idEstado = 2;
 
         // Instancia del objeto Usuario y el valor esperado
-        Usuario instance = new Usuario();
+        UsuarioDAO instance = new UsuarioDAO();
         int expResult = 1;
 
         // Ejecución del método de edición
@@ -165,7 +167,7 @@ public class TestsClase {
         String descripcion = "123948578";
         String nombre = "calapuja.industries@gmail.com";
 
-        Categoria instance = new Categoria();
+        CategoriaDAO instance = new CategoriaDAO();
 
         int expected = 1;
 
@@ -190,7 +192,7 @@ public class TestsClase {
         System.out.println("Iniciando test: Obtener usuario por su DNI");
 
         String dni = "12345678";
-        Usuario instance = new Usuario();
+        UsuarioDAO instance = new UsuarioDAO();
 
         // Esperado
         String expResultDni = "12345678";

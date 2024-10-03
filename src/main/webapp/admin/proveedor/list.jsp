@@ -4,6 +4,7 @@
     Author     : Estudiante
 --%>
 
+<%@page import="dao.ProveedorDAO"%>
 <%@page import="model.Proveedor, java.util.List, java.util.LinkedList" %>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -16,7 +17,7 @@
 
 </head>
 <%
-    Proveedor C = new Proveedor();
+    ProveedorDAO C = new ProveedorDAO();
     List<Proveedor> lista = new LinkedList<>();
     lista = C.getProveedores();
 %>

@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.RolDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
@@ -70,7 +71,7 @@ public class RolController extends HttpServlet {
         String nombre = request.getParameter("nombre");
         String descripcion = request.getParameter("descripcion");
         System.out.println("***************AQUI ANTES DE CREAR***************");
-        Rol rol = new Rol();
+        RolDAO rol = new RolDAO();
         rol.createRol(nombre, descripcion);
         System.out.println("***************DESPUES DE CREAR***************");
         request.getRequestDispatcher("/admin/index.jsp?pagina=rol").forward(request, response);
@@ -81,7 +82,7 @@ public class RolController extends HttpServlet {
         String id = request.getParameter("id");
 
         System.out.println("***************AQUI ANTES DE ELIMINAR***************");
-        Rol rol = new Rol();
+        RolDAO rol = new RolDAO();
         rol.deleteRol(id);
         System.out.println("***************DESPUES DE ELIMINAR***************");
         request.getRequestDispatcher("/admin/index.jsp?pagina=rol").forward(request, response);
@@ -94,7 +95,7 @@ public class RolController extends HttpServlet {
         String descripcion = request.getParameter("descripcion");
 
         System.out.println("***************AQUI ANTES DE EDITAR***************");
-        Rol rol = new Rol();
+        RolDAO rol = new RolDAO();
         rol.editRol(id, nombre, descripcion);
         System.out.println("***************DESPUES DE EDITAR***************");
         request.getRequestDispatcher("/admin/index.jsp?pagina=rol").forward(request, response);

@@ -1,4 +1,5 @@
 
+<%@page import="dao.VentasDAO"%>
 <%@page import="model.Venta"%>
 
 
@@ -14,7 +15,7 @@
 
 </head>
 <%
-    Venta V = new Venta();
+    VentasDAO V = new VentasDAO();
     List<Venta> lista = new LinkedList<>();
     lista = V.getVentas();
 %>

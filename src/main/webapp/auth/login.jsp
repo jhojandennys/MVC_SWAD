@@ -94,7 +94,7 @@
         <main class="min-h-screen w-full bg-image flex-col gap-6 flex justify-center items-center px-3">
             <div class="w-full max-w-96 bg-primario rounded-lg px-4 py-8 sm:px-8 sm:py-12">
                 <div class="text-center">
-                    <a href="../index.jsp" class="font-semibold text-white text-2xl">
+                    <a href="/inicio" class="font-semibold text-white text-2xl">
                         Muebles Dayanara
                     </a>
                 </div>

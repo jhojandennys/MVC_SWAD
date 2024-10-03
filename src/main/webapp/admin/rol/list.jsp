@@ -4,6 +4,7 @@
     Author     : Estudiante
 --%>
 
+<%@page import="dao.RolDAO"%>
 <%@page import="model.Rol, java.util.List, java.util.LinkedList" %>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -16,7 +17,7 @@
 
 </head>
 <%
-    Rol C = new Rol();
+    RolDAO C = new RolDAO();
     List<Rol> lista = new LinkedList<>();
     lista = C.getRols();
 %>

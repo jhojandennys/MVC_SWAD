@@ -1,10 +1,5 @@
-<%-- 
-    Document   : listado
-    Created on : 14 oct. 2023, 09:59:54
-    Author     : Estudiante
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@page import="model.Cliente, java.util.List, java.util.LinkedList" %>
+<%@page import="model.Cliente,dao.ClienteDAO, java.util.List, java.util.LinkedList" %>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Listado de Clientes</title>        
@@ -16,7 +11,7 @@
 
 </head>
 <%
-    Cliente C = new Cliente();
+    ClienteDAO C = new ClienteDAO();
     List<Cliente> lista = new LinkedList<>();
     lista = C.getClientes();
 %>

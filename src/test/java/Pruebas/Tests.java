@@ -1,5 +1,8 @@
 package Pruebas;
 
+import dao.ProductoDAO;
+import dao.ProveedorDAO;
+import dao.UsuarioDAO;
 import java.sql.Connection;
 import java.util.List;
 import model.Producto;
@@ -9,7 +12,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import utilidades.Conexion;
 
@@ -49,7 +51,6 @@ public class Tests {
         cn = instance.conecta();
 
         //assertNotNull("La conexión debería estar establecida correctamente.", cn);
-
         // Verificar si la conexión está activa (no es nula y no está cerrada)
         int valorConexion = instance.verificarConexion(cn);
         assertEquals("Conexion abierta correctamente.", 1, valorConexion);
@@ -67,13 +68,13 @@ public class Tests {
         String email = "juan.perez@empresa.com";
         String psw = "12345";
 
-        Usuario instance = new Usuario();
+        UsuarioDAO instance = new UsuarioDAO();
 
         // Resultado esperado
         int expResult = 1;
 
         // Ejecutar el método de autenticación
-        Usuario result = instance.authenticate(email, psw);
+        Usuario result = instance.authenticate(email, psw, "fda");
 
         // Comparar el resultado esperado con el resultado obtenido
         assertEquals("El resultado de la autenticación no es el esperado.", expResult, result);
@@ -96,7 +97,7 @@ public class Tests {
         int usuCreador = 1;
         int idRol = 1;
 
-        Usuario instance = new Usuario();
+        UsuarioDAO instance = new UsuarioDAO();
 
         int expResult = 1;
 
@@ -126,7 +127,7 @@ public class Tests {
         int idEstado = 2;
 
         // Instancia del objeto Usuario y el valor esperado
-        Usuario instance = new Usuario();
+        UsuarioDAO instance = new UsuarioDAO();
         int expResult = 1;
 
         // Ejecución del método de edición
@@ -143,7 +144,7 @@ public class Tests {
         System.out.println("Iniciando test: Obtener productos por categoría");
 
         String categoria = "1";
-        Producto instance = new Producto();
+        ProductoDAO instance = new ProductoDAO();
 
         int expResult = 4;
         System.out.println("Categoría seleccionada: " + categoria);
@@ -164,7 +165,7 @@ public class Tests {
         System.out.println("Iniciando prueba del método getProveedores.");
 
         // Crear una instancia de Proveedor
-        Proveedor instance = new Proveedor();
+        ProveedorDAO instance = new ProveedorDAO();
 
         int expResult = 4;
         System.out.println("Número esperado de proveedores: " + expResult);
@@ -197,7 +198,7 @@ public class Tests {
         String telefono = "123948578";
         String email = "calapuja.industries@gmail.com";
 
-        Proveedor instance = new Proveedor();
+        ProveedorDAO instance = new ProveedorDAO();
 
         int expected = 1;
 
@@ -239,7 +240,7 @@ public class Tests {
         expResult.setTelefono(telefono);
 
         // Crear una instancia de la clase que contiene el método
-        Proveedor instance = new Proveedor();
+        ProveedorDAO instance = new ProveedorDAO();
 
         // Ejecutar el método a probar
         Proveedor result = instance.getProveedorById(id);
@@ -262,7 +263,7 @@ public class Tests {
         System.out.println("Iniciando prueba de eliminación de proveedor.");
 
         String id = "4";
-        Proveedor instance = new Proveedor();
+        ProveedorDAO instance = new ProveedorDAO();
         int expResult = 1;
 
         System.out.println("Intentando eliminar el proveedor con ID: " + id);
