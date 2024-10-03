@@ -8,8 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "/vendedor", urlPatterns = {"/vendedor","/vendedor/"})
+@WebServlet(name = "/vendedor", urlPatterns = {"/vendedor", "/vendedor/"})
 public class VendedorController extends HttpServlet {
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         System.out.println("Servlet Invoked");
@@ -20,10 +21,17 @@ public class VendedorController extends HttpServlet {
         if (pagina != null) {
             switch (pagina) {
                 case "dashboard":
-                    view ="dashboard/index.jsp";
+                    view = "dashboard/index.jsp";
                     break;
-                case "vender":
-                    view = "vender/index.jsp";
+                case "ventas":
+                    System.out.println("ACCION: " + accion);
+                    if (accion == null) {
+                        view = "ventas/index.jsp";
+                        break;
+                    } else if ("vender".equals(accion)) {
+                        view = "ventas/vender.jsp";
+                        break;
+                    }
                     break;
                 case "productos":
                     view = "productos/index.jsp";
@@ -36,14 +44,14 @@ public class VendedorController extends HttpServlet {
                     break;
                 case "envios":
                     view = "envios/list.jsp";
-                    break;    
+                    break;
                 default:
                     view = "index.jsp";
                     break;
                 // Add more cases as needed
             }
         }
-        System.out.println("VIEW "+ view);
+        System.out.println("VIEW " + view);
         request.setAttribute("view", view);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/vendedor/index.jsp");
         dispatcher.forward(request, response);

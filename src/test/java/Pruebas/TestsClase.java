@@ -43,6 +43,45 @@ public class TestsClase {
 
     //TEST 1
     //@Test
+    public void testAuthenticateInvalidEmailFormat() {
+        String invalidEmail = "invalidemail.com";
+        String validPassword = "ValidPass1!";
+        Usuario usuarioService = new Usuario();
+
+        Usuario result = usuarioService.authenticate(invalidEmail, validPassword);
+
+        assertEquals("El ID de Rol debe ser -1 para un correo electrónico no válido.", Long.valueOf(-1L), result.getRol().getId());
+    }
+
+    //@Test
+    public void testAuthenticateInvalidPasswordFormat() {
+        // Arrange
+        String validEmail = "validemail@test.com";
+        String invalidPassword = "weakpass"; // Contraseña sin caracteres especiales ni mayúsculas
+        Usuario usuarioService = new Usuario();
+
+        // Act
+        Usuario result = usuarioService.authenticate(validEmail, invalidPassword);
+
+        // Assert
+        assertEquals("El ID de Rol debe ser -2 para una contraseña no válida.", Long.valueOf(-2L), result.getRol().getId());
+    }
+
+    //@Test
+    public void testAuthenticateEmailNotRegistered() {
+        // Arrange
+        String unregisteredEmail = "unregistered@test.com";
+        String validPassword = "ValidPass1!";
+        Usuario usuarioService = new Usuario();
+
+        // Act
+        Usuario result = usuarioService.authenticate(unregisteredEmail, validPassword);
+
+        // Assert
+        assertEquals("El ID de Rol debe ser -1 para un correo no registrado.", Long.valueOf(-1L), result.getRol().getId());
+    }
+
+    //@Test
     public void testAutenticarCredenciales() {
         System.out.println("Iniciando prueba de autenticación...");
 

@@ -63,10 +63,10 @@
     </table>  
 </div>
 
-<button onclick="showModalCreate()" class="mt-4 hover:bg-primario-400 text-white cursor-pointer transition-all duration-500 bg-primario-800 
-        px-5 justify-center py-1 rounded-md font-medium text-xl flex gap-2 items-center max-w-60">
+<a href="/vendedor?pagina=ventas&accion=vender" class="mt-4 hover:bg-primario-400 text-white cursor-pointer transition-all duration-500 bg-primario-800 
+   px-5 justify-center py-1 rounded-md font-medium text-xl flex gap-2 items-center max-w-60">
     Nuevo Venta
-</button>
+</a>
 <div id="modalCreate" class="hidden overlay w-full bg-black-50 h-full min-h-screen bottom-0 absolute right-0 flex items-center justify-center">
     <div class="modal bg-secondary-800 p-4 md:p-6 rounded-md text-white w-[95%] max-w-[65rem] relative">
         <i onclick="closeModalCreate()" class="fa-solid fa-xmark text-white text-2xl cursor-pointer hover:text-contrast-600 transition-all 

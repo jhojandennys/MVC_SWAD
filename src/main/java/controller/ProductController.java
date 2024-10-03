@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import java.io.IOException;
@@ -24,20 +20,24 @@ public class ProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getServletPath();
-
-        switch (action) {
-            case "/Producto/add":
-                handleAddProducto(request, response);
-                break;
-            case "/Producto/edit":
-                handleEditProducto(request, response);
-                break;
-            case "/Producto/delete":
-                handleDeleteProducto(request, response);
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                break;
+        HttpSession sesion = request.getSession();
+        if (sesion.getAttribute("userlog") != null) {
+            switch (action) {
+                case "/Producto/add":
+                    handleAddProducto(request, response);
+                    break;
+                case "/Producto/edit":
+                    handleEditProducto(request, response);
+                    break;
+                case "/Producto/delete":
+                    handleDeleteProducto(request, response);
+                    break;
+                default:
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    break;
+            }
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
@@ -50,7 +50,22 @@ public class ProductController extends HttpServlet {
             case "/Producto/add":
             case "/Producto/edit":
             case "/Producto/delete":
-                response.sendRedirect("/admin?pagina=producto");
+                HttpSession sesion = request.getSession();
+                if (sesion.getAttribute("userlog") != null) {
+                    response.sendRedirect("/admin?pagina=producto");
+                    switch (sesion.getAttribute("rol").toString()) {
+                        case "1":
+                            response.sendRedirect("/admin?pagina=producto");
+                            break;
+                        case "2":
+                            response.sendRedirect("/vendedor?pagina=productos");
+                            break;
+                        default:
+                            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    }
+                } else {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -73,13 +88,30 @@ public class ProductController extends HttpServlet {
         int idEstado = Integer.parseInt(request.getParameter("estado"));
 
         System.out.println("***************AQUI ANTES DE CREAR***************");
-        Producto prod = new Producto();
-        prod.createProduct(nombre, descripcion, idCategoria,
-                idProveedor, idEstado, preciocompra,
-                precioventa, imagen
-        );
-        System.out.println("***************DESPUES DE CREAR***************");
-        response.sendRedirect("/admin?pagina=producto");
+        HttpSession sesion = request.getSession();
+        if (sesion.getAttribute("userlog") != null) {
+
+            Producto prod = new Producto();
+            prod.createProduct(nombre, descripcion, idCategoria,
+                    idProveedor, idEstado, preciocompra,
+                    precioventa, imagen
+            );
+            System.out.println("***************DESPUES DE CREAR***************");
+
+            switch (sesion.getAttribute("rol").toString()) {
+                case "1":
+                    response.sendRedirect("/admin?pagina=producto");
+                    break;
+                case "2":
+                    response.sendRedirect("/vendedor?pagina=productos");
+                    break;
+                default:
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+
     }
 
     private void handleDeleteProducto(HttpServletRequest request, HttpServletResponse response)
