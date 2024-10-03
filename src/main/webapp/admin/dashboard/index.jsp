@@ -62,17 +62,7 @@
     
 
 %>
-<nav aria-label="breadcrumb" class="w-max mb-4">
-    <ol class="flex flex-wrap items-center w-full bg-opacity-60 rounded-md bg-transparent p-0 transition-all">
-        <li class="flex items-center  antialiased font-sans text-normal font-normal leading-normal cursor-pointer transition-colors duration-300 ">
-            <a >
-                <p class="block antialiased text-black font-sans text-sm leading-normal font-normal opacity-75 transition-all
-                   ">Dashboard</p>
-            </a>
-
-        </li>
-    </ol>
-</nav>
+<h1 class="text-black text-4xl font-bold my-5">Dashboard</h1>
 
 <div class="flex flex-wrap gap-4">
     <div class="flex  w-full sm:max-w-[18rem] md:max-w-[20rem] gap-6 rounded-md items-center justify-between bg-secondary-800 p-6 border-l-8 border-l-contrast-600 ">

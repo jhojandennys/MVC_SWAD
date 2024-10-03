@@ -17,7 +17,7 @@ public class PageController extends HttpServlet {
 
         switch (path) {
             case "/inicio":
-                request.getRequestDispatcher("/inicio.jsp").forward(request, response);
+                request.getRequestDispatcher("/index.jsp").forward(request, response);
                 break;
             case "/nosotros":
                 request.getRequestDispatcher("/nosotros.jsp").forward(request, response);

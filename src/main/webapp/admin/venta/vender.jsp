@@ -54,7 +54,7 @@
                         for (Producto pr : lista) {
 
                 %>
-                <button class=" border-t-4 relative flex flex-col h-full bg-white min-h-32 border-t-blue-500 rounded-md overflow-hidden">
+                <button class="border-t-4 relative flex flex-col h-full bg-white min-h-32 border-t-blue-500 rounded-md overflow-hidden">
                     <div class="max-w-[90%] mx-auto mb-4 mt-10">
                         <img src="https://puvesoft.co/assets/img/defecto.jpg"/>
                     </div>
@@ -64,7 +64,6 @@
                         <%= pr.getNombre()%>
                     </h2>
                 </button>
-
                 <%                     }
                     }
                 %>
@@ -72,7 +71,7 @@
             </div>      
         </div>
     </div>
-    <div class="xl:w-2/5 bg-red-500 rounded-lg h-full">
-
+    <div class="xl:w-2/5 bg-primario rounded-lg h-full">
+        
     </div>
 </div>

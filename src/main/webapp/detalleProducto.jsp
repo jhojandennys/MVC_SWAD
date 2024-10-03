@@ -5,32 +5,30 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-
-
         <title>Detalles del Producto</title><%@include file="./referencias.jsp" %>
     </head>
     <body id="body" class="font-raleway overflow-x-hidden">     
         <header class="bg-primario w-full h-24  top-0 fixed z-50 ">
             <div class="container max-w-[1200px] h-full flex justify-between p-2 md:p-4 items-center  ">
-                <a class="w-28 xs:w-32 text-3xl text-white md:w-40" href="?pagina=inicio">
+                <a class="w-28 xs:w-32 text-3xl text-white md:w-40" href="/">
                     Dayanara
                 </a>
                 <div class="flex gap-2 items-center">
                     <nav class="hidden lg:flex gap-5 mr-5 text-white ">
                         <a class="text-black hover:text-white font-semibold text-xl transition-all duration-500 flex justify-center items-center gap-2 md:justify-start" 
-                           href="inicio">
+                           href="/">
                             <span class="font-sans salto md:max-w-40 xl:max-w-full">Inicio</span>
                         </a>
                         <a class="text-black hover:text-white font-semibold text-xl transition-all duration-500
-                           flex justify-center items-center  gap-2 md:justify-start" href="productos">
+                           flex justify-center items-center  gap-2 md:justify-start" href="/productos">
                             <span class="font-sans salto md:max-w-40 xl:max-w-full text-white">Productos</span>
                         </a>
                         <a class="text-black hover:text-white font-semibold text-xl transition-all duration-500 flex justify-center items-center  gap-2 md:justify-start" 
-                           href="nosotros">
+                           href="/nosotros">
                             <span class="font-sans salto md:max-w-40 xl:max-w-full">Nosotros</span>
                         </a>
                         <a class="text-black hover:text-white font-semibold text-xl transition-all duration-500 
-                           flex justify-center items-center  gap-2 md:justify-start" href="contactanos">
+                           flex justify-center items-center  gap-2 md:justify-start" href="/contactanos">
                             <span class="font-sans salto md:max-w-40 xl:max-w-full ">Contáctanos</span>
                         </a>
                     </nav>
@@ -50,19 +48,19 @@
                         <nav id="navbar"  class="fixed min-h-screen top-0 right-0 bg-primary-300 flex flex-col max-w-96 duration-500
                              overflow-hidden w-full px-8 py-20 z-50 gap-3 translate-x-full ">
                             <a class="text-white hover:text-black font-semibold text-xl transition-all duration-500
-                               flex justify-center items-center  gap-2 md:justify-start" href="inicio">
+                               flex justify-center items-center  gap-2 md:justify-start" href="/">
                                 <span class="font-sans salto md:max-w-40 xl:max-w-full">Inicio</span>
                             </a>
                             <a class="text-white hover:text-black font-semibold text-xl transition-all duration-500 flex 
-                               justify-center items-center  gap-2 md:justify-start" href="productos">
+                               justify-center items-center  gap-2 md:justify-start" href="/productos">
                                 <span class="font-sans salto md:max-w-40 xl:max-w-full text-black">Productos</span>
                             </a>
                             <a class="text-white hover:text-black font-semibold text-xl transition-all duration-500 flex
-                               justify-center items-center  gap-2 md:justify-start  " href="nosotros">
+                               justify-center items-center  gap-2 md:justify-start  " href="/nosotros">
                                 <span class="font-sans salto md:max-w-40 xl:max-w-full">Nosotros</span>
                             </a>
                             <a class="text-white hover:text-black font-semibold text-xl transition-all duration-500 flex
-                               justify-center items-center  gap-2 md:justify-start  " href="contactanos">
+                               justify-center items-center  gap-2 md:justify-start  " href="/contactanos">
                                 <span class="font-sans salto md:max-w-40 xl:max-w-full">Contáctanos</span>
                             </a>
                             <button id="closeNav" class="hover:text-black absolute transition-all duration-500 top-6 right-6 text-white text-3xl flex">
@@ -406,26 +404,26 @@
                             <a
                                 class="selected nav-link py-1 f-link hover:text-secundario transition-all duration-500  
                                 "
-                                href="inicio"
+                                href="/"
                                 >Inicio</a
                             >
                         </li>
                         <li>
                             <a
                                 class=" nav-link py-1 f-link hover:text-secundario transition-all duration-500   text-secundario"
-                                href="productos"
+                                href="/productos"
                                 >Productos</a
                             >
                         </li>
                         <li>
                             <a class=" nav-link py-1 f-link hover:text-secundario transition-all duration-500" 
-                               href="nosotros"
+                               href="/nosotros"
                                >Nosotros</a
                             >
                         </li>
                         <li>
                             <a class=" nav-link py-1 f-link hover:text-secundario transition-all duration-500" 
-                               href="contactanos"
+                               href="/contactanos"
                                >Contáctanos</a
                             >
                         </li>

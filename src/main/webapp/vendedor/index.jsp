@@ -122,8 +122,7 @@
                             <span class="font-sans salto md:max-w-40 xl:max-w-full ">Envios</span>
                         </a>
                     </li>
-                    
-                    
+                                     
                 </ul>
             </aside>
                <div class="bg-neutral-300 p-4 w-full md:w-[calc(100%-16rem)]">
