@@ -52,10 +52,10 @@ public class Autentica extends HttpServlet {
         String apeMat = request.getParameter("apellidos").split(" ")[1];
         String correo = request.getParameter("email");
         String password = request.getParameter("password");
-        String telefono = request.getParameter("telefono"); // Asegúrate de que este campo exista en el formulario
+        String telefono = request.getParameter("telefono");
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
 
-        // Validar el CAPTCHA
+      
         if (!validateRecaptcha(gRecaptchaResponse)) {
             request.setAttribute("error", "Captcha no válido. Intenta nuevamente.");
             request.getRequestDispatcher("/auth/register.jsp").forward(request, response);
@@ -63,7 +63,7 @@ public class Autentica extends HttpServlet {
         }
 
         UsuarioDAO usuario = new UsuarioDAO();
-        int resultado = usuario.createUser(dni, nombres, correo, password, apePat, apeMat, telefono, 1, 0); // Ajusta según tus requerimientos
+        int resultado = usuario.createUser(dni, nombres, correo, password, apePat, apeMat, telefono, 1, 0); 
 
         if (resultado > 0) {
             request.setAttribute("success", "Usuario registrado correctamente.");
@@ -89,15 +89,15 @@ public class Autentica extends HttpServlet {
             ipCliente = "127.0.0.1";
         }
 
-        HttpSession sesion = request.getSession();
-        Integer intentosFallidos = (Integer) sesion.getAttribute("intentosFallidos");
+       HttpSession sesion = request.getSession();
+         /*Integer intentosFallidos = (Integer) sesion.getAttribute("intentosFallidos");
 
         // Si se han alcanzado los intentos máximos, bloquea el acceso
         if (intentosFallidos != null && intentosFallidos >= 3) {
             request.setAttribute("error", "Demasiados intentos fallidos. Por favor, intenta más tarde.");
             request.getRequestDispatcher("/auth/login.jsp").forward(request, response);
             return;
-        }
+        }*/
 
         if (!validateRecaptcha(gRecaptchaResponse)) {
             request.setAttribute("error", "Captcha no válido. Intenta nuevamente.");
@@ -109,7 +109,6 @@ public class Autentica extends HttpServlet {
 
         if (cli != null && cli.getRol().getId() > 0) { // Si el usuario está autenticado
             sesion.setAttribute("userlog", cli.getRol().getId().toString());
-            System.out.println("ROL" + cli.getRol().getId().toString());
             sesion.setAttribute("idUsuario", cli.getId());
             sesion.setAttribute("intentosFallidos", 0); // Reinicia el contador de intentos fallidos
 
@@ -126,21 +125,21 @@ public class Autentica extends HttpServlet {
             }
         } else {
             // Incrementa el contador de intentos fallidos
-            if (intentosFallidos == null) {
+          /*if (intentosFallidos == null) {
                 intentosFallidos = 0;
             }
             intentosFallidos++;
-            sesion.setAttribute("intentosFallidos", intentosFallidos);
-
-            // Establecer mensajes de error y enviar el correo de vuelta a la página de login
+            sesion.setAttribute("intentosFallidos", intentosFallidos);*/
             request.setAttribute("correo", correo);
             request.setAttribute("pass", password);
             if (cli == null) {
                 request.setAttribute("error", "Credenciales incorrectas.");
             } else if (cli.getRol().getId() == -1) {
-                request.setAttribute("error", "Correo no registrado.");
+                request.setAttribute("error", "Credenciales incorrectas.");
             } else if (cli.getRol().getId() == -2) {
-                request.setAttribute("error", "Contraseña incorrecta.");
+                request.setAttribute("error", "Credenciales incorrectas.");
+            }else if (cli.getRol().getId() == -3) {
+                request.setAttribute("error", "Acceso denegado. Demasiados intentos fallidos.");
             }
             request.getRequestDispatcher("/auth/login.jsp").forward(request, response);
         }

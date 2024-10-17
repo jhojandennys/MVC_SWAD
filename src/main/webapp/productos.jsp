@@ -232,8 +232,7 @@
                     <ul class="nav flex gap-2 mt-2 flex-col text-start ps-4 font-semibold">
                         <li>
                             <a
-                                class="selected nav-link py-1 f-link hover:text-secundario transition-all duration-500  
-                                "
+                                class="selected nav-link py-1 f-link hover:text-secundario transition-all duration-500"
                                 href="/"
                                 >Inicio</a
                             >

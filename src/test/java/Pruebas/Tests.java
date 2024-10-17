@@ -13,6 +13,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import utilidades.Conexion;
 
 /**
@@ -63,26 +64,25 @@ public class Tests {
 
     //@Test
     public void testAutenticarCredenciales() {
+        String email = "juan.perez@empresa.com";
+        String password = "Abcd1234$";
+        Long expectedRoleId = Long.valueOf(1);
+
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+
         System.out.println("Iniciando prueba de autenticación...");
 
-        String email = "juan.perez@empresa.com";
-        String psw = "12345";
+        Usuario usuarioAutenticado = usuarioDAO.authenticate(email, password, "192");
 
-        UsuarioDAO instance = new UsuarioDAO();
+        assertNotNull("El usuario autenticado no debería ser nulo.", usuarioAutenticado);
 
-        // Resultado esperado
-        int expResult = 1;
+        assertEquals("El resultado de la autenticación no es el esperado.", expectedRoleId, usuarioAutenticado.getRol().getId());
 
-        // Ejecutar el método de autenticación
-        Usuario result = instance.authenticate(email, psw, "fda");
-
-        // Comparar el resultado esperado con el resultado obtenido
-        assertEquals("El resultado de la autenticación no es el esperado.", expResult, result);
-
-        System.out.println("Prueba de autenticación completada.");
+        System.out.println("Prueba de autenticación completada con éxito.");
     }
+    
+        
     //TEST 3
-
     // @Test
     public void testCrearUsuario() {
         System.out.println("Iniciando prueba de inserción de usuario...");
