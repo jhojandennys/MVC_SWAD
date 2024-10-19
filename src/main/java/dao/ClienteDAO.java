@@ -26,7 +26,7 @@ public class ClienteDAO {
             Conexion c = new Conexion();
             Connection cnx = c.conecta();
 
-            String query = "INSERT INTO clientes (nombre, apellidoPat, apellidoMat, telefono, direccion, dni) VALUES (?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO clientes (nombres, apePaterno, apeMaterno, telefono, correo, dni,usuarioCreador,usuarioModificador) VALUES (?, ?, ?, ?, ?, ?,?,?)";
             PreparedStatement sentencia = cnx.prepareStatement(query);
             sentencia.setString(1, cl_nombre);
             sentencia.setString(2, cl_paterno);
@@ -34,6 +34,8 @@ public class ClienteDAO {
             sentencia.setString(4, cl_telf);
             sentencia.setString(5, cl_direc);
             sentencia.setString(6, cl_dni);
+            sentencia.setString(7, "1");
+            sentencia.setString(8, "1");
 
             int filasInsertadas = sentencia.executeUpdate();
 
@@ -53,7 +55,7 @@ public class ClienteDAO {
             Conexion c = new Conexion();
             Connection cnx = c.conecta();
 
-            String query = "UPDATE clientes set nombre=?, apellidoPat=?, apellidoMat=?, telefono=?, direccion=?, dni=? WHERE id=?";
+            String query = "UPDATE clientes set nombres=?, apePaterno=?, apeMaterno=?, telefono=?, correo=?, dni=? ,usuarioCreador='1',usuarioModificador='2' WHERE id=?";
             PreparedStatement sentencia = cnx.prepareStatement(query);
 
             sentencia.setString(1, cl_nombre);

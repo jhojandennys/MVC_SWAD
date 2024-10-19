@@ -94,7 +94,7 @@ public class ProductController extends HttpServlet {
             );
             System.out.println("***************DESPUES DE CREAR***************");
 
-            switch (sesion.getAttribute("rol").toString()) {
+            switch (sesion.getAttribute("userlog").toString()) {
                 case "1":
                     response.sendRedirect("/admin?pagina=producto");
                     break;

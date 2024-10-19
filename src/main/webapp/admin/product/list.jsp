@@ -16,9 +16,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Listado de Productos</title>        
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css"/>
-    <!-- Incluir jQuery -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <!-- Incluir DataTables JS desde CDN -->
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
 
 </head>
@@ -81,10 +79,10 @@
                     data-pcompra="<%= prd.getPrecioCompra()%>"
                     data-pventa="<%= prd.getPrecioVenta()%>"
                     data-imagen="<%= prd.getImagen()%>">
-                    <i class="cursor-pointer text-green-700 hover:text-green-500 transition-all duration-500 fa-solid fa-pen-to-square"
-                       onclick="editProducto(this.parentElement)"></i>
-                    <i onclick="detailsProducto(this.parentElement)" class="cursor-pointer text-blue-700 hover:text-blue-500 transition-all duration-500 fa-solid fa-circle-info"></i>
-                    <i onclick="deleteProducto(this.parentElement)" class="cursor-pointer text-red-700 hover:text-red-500 transition-all duration-500 fa-solid fa-trash"></i>
+                    <a class="cursor-pointer text-green-700 hover:text-green-500 transition-all duration-500 fa-solid fa-pen-to-square"
+                       href="/admin?pagina=producto&accion=edit&id=<%= prd.getId()%>"></a>
+                    <a href="/admin?pagina=producto&accion=details&id=<%= prd.getId()%>" class="cursor-pointer text-blue-700 hover:text-blue-500 transition-all duration-500 fa-solid fa-circle-info"></a>
+                    <a href="/admin?pagina=producto&accion=delete&id=<%= prd.getId()%>" class="cursor-pointer text-red-700 hover:text-red-500 transition-all duration-500 fa-solid fa-trash"></a>
                 </td>
             </tr>
             <%
@@ -95,97 +93,10 @@
     </table>  
 </div>
 
-<button onclick="showModalCreate()" class="mt-4 hover:bg-primario-400 text-white cursor-pointer transition-all duration-500 bg-primario-800 
-        px-5 justify-center py-1 rounded-md font-medium text-xl flex gap-2 items-center max-w-60">
+<a href="/admin?pagina=producto&accion=add"  class="mt-4 hover:bg-primario-400 text-white cursor-pointer transition-all duration-500 bg-primario-800 
+   px-5 justify-center py-1 rounded-md font-medium text-xl flex gap-2 items-center max-w-60">
     Nuevo Producto
-</button>
-<div id="modalCreate" class="hidden overlay w-full bg-black-50 h-full min-h-screen bottom-0 absolute right-0 flex items-center justify-center">
-    <div class="modal bg-secondary-800 p-4 md:p-6 rounded-md text-white w-[95%] max-w-[65rem] relative">
-        <i onclick="closeModalCreate()" class="fa-solid fa-xmark text-white text-2xl cursor-pointer hover:text-contrast-600 transition-all 
-           duration-500 right-3 top-3 absolute"></i>
-        <h2 class="font-bold text-2xl">Agregar Producto</h2>
-        <form action="/Producto/add" method="post" class="text-white my-6 flex gap-y-4  md:gap-y-6 flex-col xs:flex-row  flex-wrap w-full">
-            <div class="flex flex-col gap-y-4 md:gap-y-6 w-full  md:w-2/4 md:pr-4 ">
-                <div class="flex flex-col xs:flex-row gap-0.5  justify-between xs:items-center  w-full">
-                    <label for="cnombre"class="text-lg font-medium xs:w-2/4 sm:w-2/5 md:w-2/6">Nombre</label>
-                    <input id="cnombre" name="nombre" type="text" class="bg-secondary-800 outline-none font-sans 
-                           px-2 py-1 w-full border border-secondary-300 rounded-md " value="">
-                </div>
-                <div class="flex flex-col xs:flex-row gap-0.5  justify-between xs:items-center  w-full  ">
-                    <label for="cdescrip" class="text-lg font-medium xs:w-2/4 sm:w-2/5 md:w-2/6">Descripcion</label>
-                    <textarea id="cdescrip" name="descripcion"  class="bg-secondary-800 outline-none 
-                              font-sans px-2 py-1 w-full border border-secondary-300 rounded-md "  rows="3"></textarea>
-                </div>
-                <div class="flex flex-col xs:flex-row gap-0.5  justify-between xs:items-center  w-full  ">
-                    <label for="cestado" class="text-lg font-medium xs:w-2/4 sm:w-2/5 md:w-2/6">Estado</label>
-                    <select  name="estado" id="cestado" class="bg-secondary-800 outline-none 
-                             font-sans px-2 py-1 w-full border border-secondary-300 rounded-md " >
-                        <%
-                            if (lista != null && estados != null) {
-                                for (EstadoProducto ep : estados) {
-
-                        %>
-                        <option value="<%=ep.getId()%>" ><%=ep.getNombre()%> </ </option>
-                        <%                                }
-                            }
-                        %>
-                    </select>
-                </div>
-            </div>
-            <div class="flex flex-col gap-y-4 md:gap-y-6 w-full  md:w-2/4 md:pr-4 ">
-                <div class="flex flex-col xs:flex-row gap-0.5  justify-between xs:items-center  w-full  ">
-                    <label for="ccateg" class="text-lg font-medium xs:w-2/4 sm:w-2/5 md:w-2/6">Categoria</label>
-                    <select  name="categoria" id="ccateg" class="bg-secondary-800 outline-none 
-                             font-sans px-2 py-1 w-full border border-secondary-300 rounded-md " >
-                        <%
-                            if (lista != null && categorias != null) {
-                                for (Categoria ct : categorias) {
-
-                        %>
-                        <option value="<%=ct.getId()%>" ><%=ct.getNombre()%> </ </option>
-                        <%                                }
-                            }
-                        %>
-                    </select>
-                </div>
-                <div class="flex flex-col xs:flex-row gap-0.5  justify-between xs:items-center  w-full  ">
-                    <label for="cprov" class="text-lg font-medium xs:w-2/4 sm:w-2/5 md:w-2/6">Proveedor</label>
-                    <select  name="proveedor" id="cprov" class="bg-secondary-800 outline-none 
-                             font-sans px-2 py-1 w-full border border-secondary-300 rounded-md " >
-                        <%
-                            if (lista != null && proveedores != null) {
-                                for (Proveedor p : proveedores) {
-
-                        %>
-                        <option value="<%=p.getId()%>" ><%=p.getEmpresa()%> </ </option>
-                        <%                                }
-                            }
-                        %>
-                    </select>
-                </div>
-
-
-                <div class="flex flex-col xs:flex-row gap-0.5 justify-between xs:items-center  w-full ">
-                    <label for="ccompra" class="text-lg font-medium xs:w-2/4 sm:w-2/5 md:w-2/6">Prec. Compra</label>
-                    <input id="ccompra" name="pcompra" type="text" class="bg-secondary-800 outline-none 
-                           px-2 py-1 pr-4 font-sans w-full border  border-secondary-300 rounded-md " value="">
-                </div> 
-                <div class="flex flex-col xs:flex-row gap-0.5 justify-between xs:items-center  w-full ">
-                    <label for="cventa" class="text-lg font-medium xs:w-2/4 sm:w-2/5 md:w-2/6">Prec. Venta</label>
-                    <input id="cventa" name="pventa" type="text" class="bg-secondary-800 outline-none 
-                           px-2 py-1 pr-4 font-sans w-full border  border-secondary-300 rounded-md " value="">
-                </div> 
-            </div>
-
-            <div class="flex flex-col xs:flex-row w-full gap-4 justify-evenly">
-                <button onclick="closeModalCreate()" type="button" class="hover:bg-red-800 cursor-pointer transition-all duration-500 bg-red-600 
-                        px-5 justify-center py-1 rounded-md font-medium text-lg flex gap-2 items-center">Cancelar</button>
-                <button type="submit" class="hover:bg-green-800 cursor-pointer transition-all duration-500 bg-green-600 
-                        px-5 justify-center  py-1 rounded-md font-medium text-lg flex gap-2 items-center">Registrar</button>
-            </div>
-        </form>
-    </div>
-</div>
+</a>
 
 <div id="modalEdit" class="hidden overlay w-full bg-black-50 h-full min-h-screen bottom-0 absolute right-0 flex items-center justify-center">
     <div class="modal bg-secondary-800 p-4 md:p-6 rounded-md text-white w-[95%] max-w-[65rem] relative">

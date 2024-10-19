@@ -13,8 +13,6 @@ public class Cliente {
     
     private String telefono;
     
-    private String direccion;
-    
     private String correo;
     
     private String dni;
@@ -70,13 +68,7 @@ public class Cliente {
         this.telefono = telefono;
     }
     
-    public String getDireccion() {
-        return direccion;
-    }
-    
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
+  
     
     public String getDni() {
         return dni;

@@ -36,6 +36,15 @@ public class AdminController extends HttpServlet {
                         break;
                     case "cliente":
                         view = "client/list.jsp";
+                        if (accion != null && accion.equals("add")) {
+                            view = "client/add.jsp";
+                        } else if (accion != null && accion.equals("delete")) {
+                            view = "client/delete.jsp";
+                        } else if (accion != null && accion.equals("details")) {
+                            view = "client/details.jsp";
+                        } else if (accion != null && accion.equals("edit")) {
+                            view = "client/edit.jsp";
+                        }
                         break;
                     case "almacen":
                         view = "almacen/list.jsp";
@@ -48,9 +57,27 @@ public class AdminController extends HttpServlet {
                         break;
                     case "categoria":
                         view = "category/list.jsp";
+                        if (accion != null && accion.equals("add")) {
+                            view = "category/add.jsp";
+                        } else if (accion != null && accion.equals("delete")) {
+                            view = "category/delete.jsp";
+                        } else if (accion != null && accion.equals("details")) {
+                            view = "category/details.jsp";
+                        } else if (accion != null && accion.equals("edit")) {
+                            view = "category/edit.jsp";
+                        }
                         break;
                     case "producto":
                         view = "product/list.jsp";
+                        if (accion != null && accion.equals("add")) {
+                            view = "product/add.jsp";
+                        } else if (accion != null && accion.equals("delete")) {
+                            view = "product/delete.jsp";
+                        } else if (accion != null && accion.equals("details")) {
+                            view = "product/details.jsp";
+                        } else if (accion != null && accion.equals("edit")) {
+                            view = "product/edit.jsp";
+                        }
                         break;
                     case "venta":
                         if (accion != null && accion.equals("vender")) {

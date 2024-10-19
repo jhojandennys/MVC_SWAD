@@ -2,12 +2,14 @@ package controller;
 
 import dao.CategoriaDAO;
 import java.io.IOException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.Categoria;
 
 @WebServlet(name = "Categories", urlPatterns = {"/Categories", "/Categories/add", "/Categories/edit", "/Categories/delete"})
 public class CategoryController extends HttpServlet {
@@ -50,6 +52,7 @@ public class CategoryController extends HttpServlet {
         }
     }
 
+
     public void handleAddCategory(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String nombre = request.getParameter("nombre");
@@ -85,6 +88,6 @@ public class CategoryController extends HttpServlet {
         cat.editCategory(id, nombre, descripcion);
         System.out.println("***************DESPUES DE EDITAR***************");
 
-        response.sendRedirect("/admin/admin?pagina=categoria");
+        response.sendRedirect("/admin?pagina=categoria");
     }
 }

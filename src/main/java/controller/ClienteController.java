@@ -72,7 +72,7 @@ public class ClienteController extends HttpServlet {
         ClienteDAO cl = new ClienteDAO();
         cl.createCliente(nombre, apellPaterno, apellMaterno, telf, direc, dni);
         System.out.println("***************DESPUES DE CREAR***************");
-        request.getRequestDispatcher("/admin/index.jsp?pagina=cliente").forward(request, response);
+        response.sendRedirect("/admin?pagina=cliente");
     }
 
     private void handleDeleteCliente(HttpServletRequest request, HttpServletResponse response)
@@ -83,7 +83,7 @@ public class ClienteController extends HttpServlet {
         ClienteDAO cl = new ClienteDAO();
         cl.deleteCliente(id);
         System.out.println("***************DESPUES DE ELIMINAR***************");
-        request.getRequestDispatcher("/admin/index.jsp?pagina=cliente").forward(request, response);
+       response.sendRedirect("/admin?pagina=cliente");
     }
 
     private void handleEditCliente(HttpServletRequest request, HttpServletResponse response)
@@ -101,6 +101,6 @@ public class ClienteController extends HttpServlet {
         ClienteDAO cl = new ClienteDAO();
         cl.editCliente(id, nombre, apellPaterno, apellMaterno, telf, direc, dni);
         System.out.println("***************DESPUES DE EDITAR***************");
-        request.getRequestDispatcher("/admin/index.jsp?pagina=cliente").forward(request, response);
+        response.sendRedirect("/admin?pagina=cliente");
     }
 }

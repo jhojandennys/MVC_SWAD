@@ -82,7 +82,7 @@ public class ProductoDAO {
             sentencia.setString(9, idUser);
             sentencia.setString(10, idProducto);
             int filasActualizadas = sentencia.executeUpdate();
-
+            System.out.println("FILAS EDITADAS" + filasActualizadas);
             sentencia.close();
             cnx.close();
 
@@ -277,4 +277,49 @@ public class ProductoDAO {
         return productos;
     }
 
+    public Producto getProductById(Long idProducto) {
+        Producto producto = null;
+        String sql = "SELECT p.id, p.nombre, p.descripcion, p.precioCompra, p.precioVenta, "
+                + "c.nombre AS categoria, e.nombre AS estado, pr.empresa AS proveedor, "
+                + "p.img, p.fechaCreación, p.fechaModificación "
+                + "FROM Productos p "
+                + "JOIN Categorias c ON p.idCategoria = c.id "
+                + "JOIN EstadosProducto e ON p.idEstado = e.id "
+                + "JOIN Proveedores pr ON p.idProveedor = pr.id "
+                + "WHERE p.id = ?";
+
+        Conexion c = new Conexion();
+        Connection cnx = c.conecta();
+
+        try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
+            stmt.setLong(1, idProducto);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    producto = new Producto();
+                    producto.setId(rs.getLong("id"));
+                    producto.setNombre(rs.getString("nombre"));
+                    producto.setDescripcion(rs.getString("descripcion"));
+                    producto.setPrecioCompra(rs.getDouble("precioCompra"));
+                    producto.setPrecioVenta(rs.getDouble("precioVenta"));
+
+                    Categoria categoria = new Categoria();
+                    categoria.setNombre(rs.getString("categoria"));
+                    producto.setCategoria(categoria);
+
+                    EstadoProducto estado = new EstadoProducto();
+                    estado.setNombre(rs.getString("estado"));
+                    producto.setEstado(estado);
+
+                    Proveedor proveedor = new Proveedor();
+                    proveedor.setEmpresa(rs.getString("proveedor"));
+                    producto.setProveedor(proveedor);
+
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en getProductById: " + e.getMessage());
+        }
+
+        return producto;
+    }
 }
