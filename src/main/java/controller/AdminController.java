@@ -49,6 +49,9 @@ public class AdminController extends HttpServlet {
                     case "almacen":
                         view = "almacen/list.jsp";
                         break;
+                    case "detalle":
+                        view = "detalleProducto.jsp";
+                        break;
                     case "proveedor":
                         view = "proveedor/list.jsp";
                         break;
@@ -101,7 +104,7 @@ public class AdminController extends HttpServlet {
             RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/index.jsp");
             dispatcher.forward(request, response); // Forward to the specific view
         } else {
-            response.sendRedirect("../auth/login.jsp");
+            response.sendRedirect("../auth/error401.jsp");
         }
     }
 

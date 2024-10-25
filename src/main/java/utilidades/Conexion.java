@@ -25,6 +25,7 @@ public class Conexion {
             String usr = "root";
             String psw = "root";
             String url = "jdbc:mysql://localhost:33066/BDCamas";
+            String url2  = "mysql://root:jepTCANtLJMLkdmXFVFKnyzzofHdvGdD@autorack.proxy.rlwy.net:41995/railway";
             Class.forName("com.mysql.cj.jdbc.Driver");
             cnx = DriverManager.getConnection(url, usr, psw);
         } catch (SQLException e) {

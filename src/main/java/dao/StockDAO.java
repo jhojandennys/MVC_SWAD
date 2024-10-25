@@ -53,7 +53,6 @@ public class StockDAO {
                 pr.setDescripcion(resultado.getString("producto_descripcion"));
                 pr.setPrecioVenta(resultado.getDouble("precioVenta"));
                 pr.setPrecioCompra(resultado.getDouble("precioCompra"));
-                pr.setImagen(resultado.getString("img"));
 
                 Categoria cat = new Categoria();
 

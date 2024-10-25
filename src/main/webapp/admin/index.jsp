@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
- if (session.getAttribute("userlog") != null && session.getAttribute("userlog").toString().equals("1")) {
+    if (session.getAttribute("userlog") != null && session.getAttribute("userlog").toString().equals("1")) {
 %>
 <!DOCTYPE html >
 <html>
@@ -188,7 +188,15 @@
     </body>
 </html>
 <%
-    } else {
-        response.sendRedirect("../auth/login.jsp");
+} else {
+%>
+
+<div>
+    <h2 class="text-red-500 text-4xl font-bold">
+        Acceso no autorizado chupapinga
+    </h2>
+    <a href="/auth/login.jsp">Iniciar Sesion</a>
+</div>
+<%
     }
 %>

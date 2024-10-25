@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @WebServlet(name = "/vendedor", urlPatterns = {"/vendedor", "/vendedor/"})
 public class VendedorController extends HttpServlet {
@@ -16,9 +17,11 @@ public class VendedorController extends HttpServlet {
         System.out.println("Servlet Invoked");
         String pagina = request.getParameter("pagina");
         String accion = request.getParameter("accion");
-        String view = "index.jsp"; // default view
+        HttpSession sesion = request.getSession();
         System.out.println("llego request");
-        if (pagina != null) {
+         if (sesion.getAttribute("userlog") != null) {
+            String view = "index.jsp";
+            if (pagina != null) {
             switch (pagina) {
                 case "dashboard":
                     view = "dashboard/index.jsp";
@@ -51,10 +54,13 @@ public class VendedorController extends HttpServlet {
                 // Add more cases as needed
             }
         }
-        System.out.println("VIEW " + view);
+        
         request.setAttribute("view", view);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/vendedor/index.jsp");
         dispatcher.forward(request, response);
+        } else {
+            response.sendRedirect("../auth/error401.jsp");
+        }
     }
 
 }

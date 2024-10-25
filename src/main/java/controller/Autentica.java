@@ -9,6 +9,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.concurrent.CompletableFuture;
 import java.util.Scanner;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -55,7 +61,6 @@ public class Autentica extends HttpServlet {
         String telefono = request.getParameter("telefono");
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
 
-      
         if (!validateRecaptcha(gRecaptchaResponse)) {
             request.setAttribute("error", "Captcha no válido. Intenta nuevamente.");
             request.getRequestDispatcher("/auth/register.jsp").forward(request, response);
@@ -63,7 +68,7 @@ public class Autentica extends HttpServlet {
         }
 
         UsuarioDAO usuario = new UsuarioDAO();
-        int resultado = usuario.createUser(dni, nombres, correo, password, apePat, apeMat, telefono, 1, 0); 
+        int resultado = usuario.createUser(dni, nombres, correo, password, apePat, apeMat, telefono, 1, 0);
 
         if (resultado > 0) {
             request.setAttribute("success", "Usuario registrado correctamente.");
@@ -74,23 +79,36 @@ public class Autentica extends HttpServlet {
         }
     }
 
+    public CompletableFuture<String> obtenerIpPublicaAsync() {
+        return CompletableFuture.supplyAsync(() -> {
+            StringBuilder result = new StringBuilder();
+            try {
+                URL url = new URL("http://api.ipify.org");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return result.toString();
+        });
+    }
+
     public void validar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String correo = request.getParameter("correo");
         String password = request.getParameter("password");
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
-        String ipCliente = request.getHeader("X-Forwarded-For");
-
-        if (ipCliente == null || ipCliente.isEmpty() || "unknown".equalsIgnoreCase(ipCliente)) {
-            ipCliente = request.getRemoteAddr();
-        }
-
-        if ("0:0:0:0:0:0:0:1".equals(ipCliente)) {
-            ipCliente = "127.0.0.1";
-        }
-
-       HttpSession sesion = request.getSession();
-         /*Integer intentosFallidos = (Integer) sesion.getAttribute("intentosFallidos");
+        String ipCliente = obtenerIpPublicaAsync().join();
+        System.out.println("IPCLIENTE:  " + ipCliente);
+        HttpSession sesion = request.getSession();
+        /*Integer intentosFallidos = (Integer) sesion.getAttribute("intentosFallidos");
 
         // Si se han alcanzado los intentos máximos, bloquea el acceso
         if (intentosFallidos != null && intentosFallidos >= 3) {
@@ -125,7 +143,7 @@ public class Autentica extends HttpServlet {
             }
         } else {
             // Incrementa el contador de intentos fallidos
-          /*if (intentosFallidos == null) {
+            /*if (intentosFallidos == null) {
                 intentosFallidos = 0;
             }
             intentosFallidos++;
@@ -138,7 +156,7 @@ public class Autentica extends HttpServlet {
                 request.setAttribute("error", "Credenciales incorrectas.");
             } else if (cli.getRol().getId() == -2) {
                 request.setAttribute("error", "Credenciales incorrectas.");
-            }else if (cli.getRol().getId() == -3) {
+            } else if (cli.getRol().getId() == -3) {
                 request.setAttribute("error", "Acceso denegado. Demasiados intentos fallidos.");
             }
             request.getRequestDispatcher("/auth/login.jsp").forward(request, response);

@@ -5,7 +5,8 @@
 package model;
 
 import java.sql.Timestamp;
-
+import java.util.ArrayList;
+import java.util.List;
 
 public class Producto {
 
@@ -19,21 +20,21 @@ public class Producto {
 
     private double precioVenta;
 
-    private String imagen;
-
     private Categoria categoria;
 
     private Proveedor proveedor;
 
     private EstadoProducto estado;
 
+    private List<ImagenProducto> listaImagenes;
+
     public Producto() {
         categoria = new Categoria();
         proveedor = new Proveedor();
         estado = new EstadoProducto();
+        listaImagenes = new ArrayList<>();
     }
 
-   
     public Categoria getCategoria() {
         return categoria;
     }
@@ -90,14 +91,6 @@ public class Producto {
         this.precioVenta = precioVenta;
     }
 
-    public String getImagen() {
-        return imagen;
-    }
-
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
-    }
-
     public EstadoProducto getEstado() {
         return estado;
     }
@@ -105,4 +98,13 @@ public class Producto {
     public void setEstado(EstadoProducto estado) {
         this.estado = estado;
     }
+
+    public List<ImagenProducto> getListaImagenes() {
+        return listaImagenes;
+    }
+
+    public void setListaImagenes(List<ImagenProducto> listaImagenes) {
+        this.listaImagenes = listaImagenes;
+    }
+
 }
