@@ -65,12 +65,12 @@ public class ClienteController extends HttpServlet {
         String apellPaterno = request.getParameter("apaterno");
         String apellMaterno = request.getParameter("amaterno");
         String telf = request.getParameter("telefono");
-        String direc = request.getParameter("direccion");
         String dni = request.getParameter("dni");
-
+        String contra = request.getParameter("contra");
+        String correo = request.getParameter("correo");
         System.out.println("***************AQUI ANTES DE CREAR***************");
         ClienteDAO cl = new ClienteDAO();
-        cl.createCliente(nombre, apellPaterno, apellMaterno, telf, direc, dni);
+        cl.createCliente(dni, nombre, correo, contra, apellPaterno, apellMaterno, telf, 1);
         System.out.println("***************DESPUES DE CREAR***************");
         response.sendRedirect("/admin?pagina=cliente");
     }
@@ -83,7 +83,7 @@ public class ClienteController extends HttpServlet {
         ClienteDAO cl = new ClienteDAO();
         cl.deleteCliente(id);
         System.out.println("***************DESPUES DE ELIMINAR***************");
-       response.sendRedirect("/admin?pagina=cliente");
+        response.sendRedirect("/admin?pagina=cliente");
     }
 
     private void handleEditCliente(HttpServletRequest request, HttpServletResponse response)
@@ -96,10 +96,10 @@ public class ClienteController extends HttpServlet {
         String telf = request.getParameter("telefono");
         String direc = request.getParameter("direccion");
         String dni = request.getParameter("dni");
-
+        String contra = request.getParameter("contra");
         System.out.println("***************AQUI ANTES DE EDITAR***************");
         ClienteDAO cl = new ClienteDAO();
-        cl.editCliente(id, nombre, apellPaterno, apellMaterno, telf, direc, dni);
+        cl.editCliente(id, nombre, apellPaterno, apellMaterno, telf, direc, dni,contra);
         System.out.println("***************DESPUES DE EDITAR***************");
         response.sendRedirect("/admin?pagina=cliente");
     }

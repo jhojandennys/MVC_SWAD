@@ -71,6 +71,17 @@
             <version>4.6.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.lbovolini</groupId>
+            <artifactId>ObjectMapper</artifactId>
+            <version>0.2.3</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.2</version> <!-- Usa la versión más reciente -->
+        </dependency>
     </dependencies>
     <build>
    

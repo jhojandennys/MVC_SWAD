@@ -21,7 +21,7 @@ public class AdminController extends HttpServlet {
         String pagina = request.getParameter("pagina");
         String accion = request.getParameter("accion");
         HttpSession sesion = request.getSession();
-        if (sesion.getAttribute("userlog") != null) {
+        if (sesion.getAttribute("userlog") != null && "1".equals(sesion.getAttribute("userlog").toString())) {
             String view = "index.jsp";
             if (pagina != null) {
                 switch (pagina) {

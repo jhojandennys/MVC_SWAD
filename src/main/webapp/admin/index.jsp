@@ -173,8 +173,8 @@
                     </li>
                 </ul>
             </aside>
-            <div class="bg-neutral-300 p-4 h-[calc(100vh-96px)] w-full md:w-[calc(100%-16rem)]">
-                <div class="h-full ">
+            <div class="bg-neutral-300 h-[calc(100vh-96px)] w-full md:w-[calc(100%-16rem)]">
+                <div class="h-full overflow-y-auto p-4 y-scroll">
                     <% String view = (String) request.getAttribute("view");  %>
                     <% if (view != null) {%>
                     <jsp:include page="<%=view%>" />

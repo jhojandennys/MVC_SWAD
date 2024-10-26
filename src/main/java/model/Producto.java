@@ -7,6 +7,7 @@ package model;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Producto {
 
@@ -71,6 +72,17 @@ public class Producto {
         return nombre;
     }
 
+    public String getImagenPrincipal() {
+        String img = "";
+        for (ImagenProducto imagen : listaImagenes) {
+            if (imagen.isEsPrincipal()) {
+                img = imagen.getImagen();
+                return imagen.getImagen();
+            }
+        }
+        return img;
+    }
+
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -105,6 +117,22 @@ public class Producto {
 
     public void setListaImagenes(List<ImagenProducto> listaImagenes) {
         this.listaImagenes = listaImagenes;
+    }
+
+    public List<ImagenProducto> getImagenesSecundarias() {
+        List<ImagenProducto> imagenesSecundarias = new ArrayList<>();
+        for (ImagenProducto imagen : listaImagenes) {
+            if (!imagen.isEsPrincipal()) {
+                imagenesSecundarias.add(imagen);
+            }
+        }
+        return imagenesSecundarias;
+    }
+
+    public List<String> getImagenesSecundariasURLs() {
+        return getImagenesSecundarias().stream()
+                .map(ImagenProducto::getImagen) 
+                .collect(Collectors.toList());
     }
 
 }

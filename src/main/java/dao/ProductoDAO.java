@@ -33,7 +33,11 @@ public class ProductoDAO {
         Connection cnx = null;
         PreparedStatement sentencia = null;
         ResultSet generatedKeys = null;
-
+        //PROBANDAO 
+        System.out.println("PRUEBA CREATE PRODUCTO -----");
+        System.out.println(imagenesSecundarias);
+        imagenesSecundarias.forEach(img -> System.out.println(img));
+        System.out.println("PRUEBA CREATE PRODUCTO");
         try {
             Conexion c = new Conexion();
             cnx = c.conecta();
@@ -106,39 +110,76 @@ public class ProductoDAO {
 
     public int editProduct(String p_nombre, String idProducto,
             String p_descripcion, int p_idCategoria, int p_idProveedor,
-            int p_idEstado, double p_preCompra, double p_preVenta, String idUser) {
+            int p_idEstado, double p_preCompra, double p_preVenta, String idUser, String imagenPrincipal, List<String> imagenesSecundarias) {
         try {
             Conexion c = new Conexion();
             Connection cnx = c.conecta();
 
-            String query = "UPDATE BDCamas.Productos\n"
-                    + "SET \n"
-                    + "    nombre = ?, \n"
-                    + "    descripcion = ?, \n"
-                    + "    precioCompra = ?, \n"
-                    + "    precioVenta = ?, \n"
-                    + "    idCategoria = ?, \n"
-                    + "    idEstado = ?, \n"
-                    + "    idProveedor = ?, \n"
-                    + "    usuarioModificador = ?"
-                    + "WHERE \n"
-                    + "    id = ?; ";
-            PreparedStatement sentencia = cnx.prepareStatement(query);
+            // Actualizar los detalles del producto
+            String queryUpdateProducto = "UPDATE BDCamas.Productos SET "
+                    + "nombre = ?, "
+                    + "descripcion = ?, "
+                    + "precioCompra = ?, "
+                    + "precioVenta = ?, "
+                    + "idCategoria = ?, "
+                    + "idEstado = ?, "
+                    + "idProveedor = ?, "
+                    + "usuarioModificador = ? "
+                    + "WHERE id = ?;";
+            PreparedStatement sentenciaProducto = cnx.prepareStatement(queryUpdateProducto);
 
-            sentencia.setString(1, p_nombre);
-            sentencia.setString(2, p_descripcion);
-            sentencia.setDouble(3, p_preCompra);
-            sentencia.setDouble(4, p_preVenta);
-            sentencia.setInt(5, p_idCategoria);
-            sentencia.setInt(6, p_idEstado);
-            sentencia.setInt(7, p_idProveedor);
-            sentencia.setString(8, idUser);
-            sentencia.setString(9, idProducto);
-            int filasActualizadas = sentencia.executeUpdate();
-            System.out.println("FILAS EDITADAS" + filasActualizadas);
-            sentencia.close();
+            sentenciaProducto.setString(1, p_nombre);
+            sentenciaProducto.setString(2, p_descripcion);
+            sentenciaProducto.setDouble(3, p_preCompra);
+            sentenciaProducto.setDouble(4, p_preVenta);
+            sentenciaProducto.setInt(5, p_idCategoria);
+            sentenciaProducto.setInt(6, p_idEstado);
+            sentenciaProducto.setInt(7, p_idProveedor);
+            sentenciaProducto.setString(8, idUser);
+            sentenciaProducto.setString(9, idProducto);
+            int filasActualizadas = sentenciaProducto.executeUpdate();
+            sentenciaProducto.close();
+
+            // Actualizar la imagen principal
+            if (imagenPrincipal != null) {
+                String queryUpdateImagenPrincipal = "UPDATE BDCamas.Imagenes SET img = ?, esPrincipal = TRUE WHERE idProducto = ? AND esPrincipal = TRUE;";
+                PreparedStatement sentenciaPrincipal = cnx.prepareStatement(queryUpdateImagenPrincipal);
+                sentenciaPrincipal.setString(1, imagenPrincipal);
+                System.out.println("IMAGEN PRINCIPAL" + imagenPrincipal);
+                sentenciaPrincipal.setInt(2, Integer.parseInt(idProducto));
+                int updated = sentenciaPrincipal.executeUpdate();
+                sentenciaPrincipal.close();
+                if (updated < 1) {
+                    String query = "INSERT INTO Imagenes (idProducto, img, esPrincipal) VALUES (?, ?, ?)";
+                    PreparedStatement sentenciaInsert = cnx.prepareStatement(query);
+                    sentenciaInsert.setString(1, idProducto);
+                    sentenciaInsert.setString(2, imagenPrincipal);
+                    sentenciaInsert.setBoolean(3, true);
+                    sentenciaInsert.executeUpdate();
+
+                    sentenciaInsert.close();
+                }
+            }
+
+            // Eliminar imágenes secundarias actuales
+            String queryDeleteSecundarias = "DELETE FROM BDCamas.Imagenes WHERE idProducto = ? AND esPrincipal = FALSE;";
+            PreparedStatement sentenciaDelete = cnx.prepareStatement(queryDeleteSecundarias);
+            sentenciaDelete.setInt(1, Integer.parseInt(idProducto));
+            sentenciaDelete.executeUpdate();
+            sentenciaDelete.close();
+
+            // Insertar nuevas imágenes secundarias
+            String queryInsertSecundarias = "INSERT INTO BDCamas.Imagenes (idProducto, img, esPrincipal) VALUES (?, ?, FALSE);";
+            PreparedStatement sentenciaInsert = cnx.prepareStatement(queryInsertSecundarias);
+            for (String img : imagenesSecundarias) {
+                sentenciaInsert.setInt(1, Integer.parseInt(idProducto));
+                sentenciaInsert.setString(2, img);
+                sentenciaInsert.addBatch(); // Añadir al batch
+            }
+            sentenciaInsert.executeBatch(); // Ejecutar todas las inserciones
+            sentenciaInsert.close();
+
             cnx.close();
-
             return filasActualizadas > 0 ? 1 : 0;
         } catch (SQLException e) {
             System.out.println("Error en editProduct: " + e.getMessage());
@@ -150,18 +191,24 @@ public class ProductoDAO {
         try {
             Conexion c = new Conexion();
             Connection cnx = c.conecta();
-
-            String query = "DELETE FROM productos WHERE id=?";
-            PreparedStatement sentencia = cnx.prepareStatement(query);
+            String query1 = "DELETE FROM imagenes WHERE idProducto=?";
+            String query2 = "DELETE FROM productos WHERE id=?";
+            PreparedStatement sentencia = cnx.prepareStatement(query1);
 
             sentencia.setString(1, id);
-
-            int filasEliminadas = sentencia.executeUpdate();
-
+            sentencia.executeUpdate();
             sentencia.close();
+
+            PreparedStatement sentencia2 = cnx.prepareStatement(query2);
+            sentencia2.setString(1, id);
+
+            int filasEliminadas2 = sentencia2.executeUpdate();
+
+            sentencia2.close();
+
             cnx.close();
 
-            return filasEliminadas > 0 ? 1 : 0;
+            return filasEliminadas2 > 0 ? 1 : 0;
         } catch (SQLException e) {
             System.out.println("Error en deleteUser: " + e.getMessage());
             return 0;
@@ -392,7 +439,7 @@ public class ProductoDAO {
     public Producto getProductById(Long idProducto) {
         Producto producto = null;
         String sql = "SELECT p.id, p.nombre, p.descripcion, p.precioCompra, p.precioVenta, "
-                + "c.nombre AS categoria, e.nombre AS estado, pr.empresa AS proveedor, "
+                + "c.nombre AS categoria,c.id AS categoriaID, e.nombre AS estado,e.id AS estadoID, pr.id AS proveedorID, pr.empresa AS proveedor, "
                 + "ip.id AS imagenId, ip.img AS imagenUrl, ip.esPrincipal "
                 + "FROM Productos p "
                 + "JOIN Categorias c ON p.idCategoria = c.id "
@@ -419,14 +466,17 @@ public class ProductoDAO {
                         producto.setPrecioVenta(rs.getDouble("precioVenta"));
 
                         Categoria categoria = new Categoria();
+                        categoria.setId(rs.getLong("categoriaID"));
                         categoria.setNombre(rs.getString("categoria"));
                         producto.setCategoria(categoria);
 
                         EstadoProducto estado = new EstadoProducto();
+                        estado.setId(rs.getLong("estadoID"));
                         estado.setNombre(rs.getString("estado"));
                         producto.setEstado(estado);
 
                         Proveedor proveedor = new Proveedor();
+                        proveedor.setId(rs.getLong("proveedorID"));
                         proveedor.setEmpresa(rs.getString("proveedor"));
                         producto.setProveedor(proveedor);
 

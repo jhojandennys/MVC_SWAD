@@ -2,17 +2,20 @@
 <%@page import="dao.ProductoDAO"%>
 <%@page import="model.Producto"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="java.text.DecimalFormat" %>
+<%@page import="java.text.DecimalFormat" %>
 
-<!DOCTYPE html>
 <%
     ProductoDAO PD = new ProductoDAO();
     String idParam = request.getParameter("id");
     Long id = Long.parseLong(idParam);
     Producto producto = PD.getProductById(id);
+    if (producto == null) {
+        response.sendRedirect("productos.jsp");
+    }
     DecimalFormat df = new DecimalFormat("#0.00");
     String precioFormateado = df.format(producto.getPrecioVenta());
 %>
+<!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
@@ -24,7 +27,6 @@
                 overflow: hidden;
                 cursor: zoom-in;
             }
-
             #zoomImage {
                 transition: transform 0.3s ease-in-out;
                 transform-origin: center center;
@@ -36,9 +38,6 @@
                 display: none;
 
             }
-
-
-
         </style>
     </head>
     <body id="body" class="font-raleway overflow-x-hidden">     
@@ -177,11 +176,7 @@
                         </div>
                         <h1 class="text-2xl font-bold"><%=producto.getNombre()%></h1>
                         <p class="text-lg text-green-600 mb-2">S/<%=precioFormateado%></p>
-                        <p class="text-gray-700 mb-4">Estructura interna en madera | La madera Cuenta con tratamiento de secado al horno|Perfecto para cachudos
-                            |Forrado en tela velvet en los lados y notex en la tapa | Cuenta con 4 pernos para la adaptación de cabeceros | 4 patas cromadas +
-                            | Estructura interna en madera pino y nordex de 3m.m | Espuma de 2 pulgadas | Tapizada en tela velvet | 18 botones en la tapa</p>
-
-                        <!-- Medidas -->
+                        <p class="text-gray-700 mb-4"> <%=producto.getDescripcion()%></p>
                         <div class="mb-4">
                             <span class="font-bold">Cantidad:</span>
                             <input type="number" value="2" min="1" max="5" class="w-16 ml-2 border p-1 text-center">
@@ -200,7 +195,7 @@
                         </div>
 
                         <!-- Código de Producto -->
-                        <p class="mb-4"><strong>Cod:</strong> PROD0001</p>
+                        <p class="mb-4"><strong>Cod:</strong> PROD00<%=producto.getId()%></p>
 
                         <!-- Botones -->
                         <div class="flex gap-4 mb-4">

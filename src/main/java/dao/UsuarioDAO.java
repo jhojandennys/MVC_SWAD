@@ -25,104 +25,129 @@ public class UsuarioDAO {
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
 
+        // Validaciones de formato
         if (!Pattern.matches(emailRegex, email)) {
-            System.out.println("Correo electrónico no válido.");
-            rolN.setId(Long.valueOf("-1"));
+            rolN.setId(Long.valueOf("-1")); // Correo no válido
             logueado.setRol(rolN);
             return logueado;
         }
         if (!Pattern.matches(passwordRegex, psw)) {
-            System.out.println("Contraseña no válida.");
-            rolN.setId(Long.valueOf("-2"));
+            rolN.setId(Long.valueOf("-2")); // Contraseña no válida
             logueado.setRol(rolN);
             return logueado;
         }
 
-        try {
-            Connection cnx = Conexion.conecta();
+        try (Connection cnx = Conexion.conecta()) {
+            String querySelect = "SELECT 'Clientes' AS tabla, id, correo, contra FROM BDCamas.Clientes WHERE correo = ? "
+                    + "UNION "
+                    + "SELECT 'Empleados' AS tabla, id, correo, contra FROM BDCamas.Empleados WHERE correo = ?;";
+            PreparedStatement selectStmt = cnx.prepareStatement(querySelect);
+            selectStmt.setString(1, email);
+            selectStmt.setString(2, email);
 
-            String queryIntentos = "SELECT cantidad FROM IntentosSession WHERE idEmpleado = ? "
-                    + "AND fecha = CURDATE() AND hora >= DATE_SUB(NOW(), INTERVAL 1 HOUR)";
-            PreparedStatement sentenciaIntentos = cnx.prepareStatement(queryIntentos);
-
-            String queryEmail = "SELECT e.*, r.nombre as nombreRol FROM Empleados e "
-                    + "INNER JOIN Roles r ON e.idRol = r.id WHERE e.correo = ?";
-            PreparedStatement sentenciaEmail = cnx.prepareStatement(queryEmail);
-            sentenciaEmail.setString(1, email);
-            ResultSet resultadoEmail = sentenciaEmail.executeQuery();
-
-            if (!resultadoEmail.next()) {
-                rolN.setId(Long.valueOf("-1"));
+            ResultSet rsSelectExistente = selectStmt.executeQuery();
+            if (!rsSelectExistente.next()) {
+                rolN.setId(Long.valueOf("-1")); // Correo no registrado
                 logueado.setRol(rolN);
-                System.out.println("Correo no registrado.");
-                resultadoEmail.close();
-                sentenciaEmail.close();
-                cnx.close();
                 return logueado;
             }
 
-            long idEmpleado = resultadoEmail.getLong("id");
-            sentenciaIntentos.setLong(1, idEmpleado);
-            ResultSet resultadoIntentos = sentenciaIntentos.executeQuery();
+            String tipo = rsSelectExistente.getString("tabla");
+            long idUsuario = rsSelectExistente.getLong("id");
+            String hashPassword = rsSelectExistente.getString("contra");
 
-            int intentos = 0;
-            if (resultadoIntentos.next()) {
-                intentos = resultadoIntentos.getInt("cantidad");
-            }
+            // Manejo de empleados
+            if ("Empleados".equals(tipo)) {
+                String queryEmail = "SELECT e.*, r.nombre as nombreRol FROM Empleados e "
+                        + "INNER JOIN Roles r ON e.idRol = r.id WHERE e.correo = ?";
+                PreparedStatement sentenciaEmail = cnx.prepareStatement(queryEmail);
+                sentenciaEmail.setString(1, email);
+                ResultSet resultadoEmail = sentenciaEmail.executeQuery();
 
-            if (intentos >= 3) {
-                rolN.setId(Long.valueOf("-3"));
-                logueado.setRol(rolN);
-                System.out.println("Acceso denegado. Demasiados intentos fallidos.");
-                resultadoEmail.close();
-                sentenciaEmail.close();
-                cnx.close();
-                return logueado;
-            }
+                if (!resultadoEmail.next()) {
+                    rolN.setId(Long.valueOf("-1"));
+                    logueado.setRol(rolN);
+                    System.out.println("Correo no registrado.");
+                    resultadoEmail.close();
+                    sentenciaEmail.close();
+                    cnx.close();
+                    return logueado;
+                }
+                // Lógica para manejar intentos fallidos
+                if (!checkIntentosFallidos(cnx, idUsuario)) {
+                    rolN.setId(Long.valueOf("-3")); // Demasiados intentos fallidos
+                    logueado.setRol(rolN);
+                    return logueado;
+                }
 
-            String hashPassword = resultadoEmail.getString("contra");
-            if (BCrypt.checkpw(psw, hashPassword)) {
-                logueado.setId(idEmpleado);
-                rolN.setId(Long.valueOf(resultadoEmail.getString("idRol")));
-
-                String insertSession = "INSERT INTO HistorialSesion (idEmpleado, ip, usuarioCreador, usuarioModificador) VALUES (?, ?, ?, ?)";
-                PreparedStatement sentenciaSession = cnx.prepareStatement(insertSession);
-                sentenciaSession.setLong(1, logueado.getId());
-                sentenciaSession.setString(2, ipCliente);
-                sentenciaSession.setLong(3, logueado.getId());
-                sentenciaSession.setLong(4, logueado.getId());
-                sentenciaSession.executeUpdate();
-                sentenciaSession.close();
-
-                String resetIntentos = "DELETE FROM IntentosSession WHERE idEmpleado = ? AND fecha = CURDATE()";
-                PreparedStatement sentenciaReset = cnx.prepareStatement(resetIntentos);
-                sentenciaReset.setLong(1, idEmpleado);
-                sentenciaReset.executeUpdate();
-                sentenciaReset.close();
-            } else {
-                String updateIntentos = "INSERT INTO IntentosSession (idEmpleado, ip, cantidad, fecha, hora, usuarioModificador) "
-                        + "VALUES (?, ?, 1, CURDATE(), NOW(), ?) "
-                        + "ON DUPLICATE KEY UPDATE cantidad = cantidad + 1, ip = VALUES(ip), fecha = CURDATE(), hora = NOW()";
-                PreparedStatement sentenciaUpdate = cnx.prepareStatement(updateIntentos);
-                sentenciaUpdate.setLong(1, idEmpleado);
-                sentenciaUpdate.setString(2, ipCliente);
-                sentenciaUpdate.setLong(3, idEmpleado);
-                sentenciaUpdate.executeUpdate();
-                sentenciaUpdate.close();
-
-                rolN.setId(Long.valueOf("-2"));
-                System.out.println("Contraseña o Correo incorrecto.");
+                // Verificar contraseña
+                if (BCrypt.checkpw(psw, hashPassword)) {
+                    logueado.setId(idUsuario);
+                    // Registra sesión en historial
+                    registerSesion(cnx, idUsuario, ipCliente);
+                    resetIntentos(cnx, idUsuario);
+                    rolN.setId(Long.valueOf(resultadoEmail.getString("idRol"))); // Asigna rol
+                } else {
+                    incrementIntentos(cnx, idUsuario, ipCliente);
+                    rolN.setId(Long.valueOf("-2")); // Contraseña incorrecta
+                }
+            } else if ("Clientes".equals(tipo)) {
+                // Manejo para clientes (sin historial de sesión)
+                if (BCrypt.checkpw(psw, hashPassword)) {
+                    logueado.setId(idUsuario);
+                    rolN.setId(Long.valueOf(0)); // Asigna rol para cliente si es necesario
+                } else {
+                    rolN.setId(Long.valueOf("-2")); // Contraseña incorrecta
+                }
             }
 
             logueado.setRol(rolN);
-            resultadoEmail.close();
-            sentenciaEmail.close();
-            cnx.close();
-            return logueado;
         } catch (SQLException e) {
             System.out.println("Error en authenticate: " + e.getMessage());
-            return logueado;
         }
+        return logueado;
+    }
+
+// Métodos auxiliares para gestionar intentos de sesión
+    private boolean checkIntentosFallidos(Connection cnx, long idEmpleado) throws SQLException {
+        String queryIntentos = "SELECT cantidad FROM IntentosSession WHERE idEmpleado = ? AND fecha = CURDATE() AND hora >= DATE_SUB(NOW(), INTERVAL 1 HOUR)";
+        PreparedStatement sentenciaIntentos = cnx.prepareStatement(queryIntentos);
+        sentenciaIntentos.setLong(1, idEmpleado);
+        ResultSet resultadoIntentos = sentenciaIntentos.executeQuery();
+
+        int intentos = 0;
+        if (resultadoIntentos.next()) {
+            intentos = resultadoIntentos.getInt("cantidad");
+        }
+        return intentos < 3; // Devuelve true si hay menos de 3 intentos
+    }
+
+    private void registerSesion(Connection cnx, long idEmpleado, String ipCliente) throws SQLException {
+        String insertSession = "INSERT INTO HistorialSesion (idEmpleado, ip, usuarioCreador, usuarioModificador) VALUES (?, ?, ?, ?)";
+        PreparedStatement sentenciaSession = cnx.prepareStatement(insertSession);
+        sentenciaSession.setLong(1, idEmpleado);
+        sentenciaSession.setString(2, ipCliente);
+        sentenciaSession.setLong(3, idEmpleado);
+        sentenciaSession.setLong(4, idEmpleado);
+        sentenciaSession.executeUpdate();
+    }
+
+    private void resetIntentos(Connection cnx, long idEmpleado) throws SQLException {
+        String resetIntentos = "DELETE FROM IntentosSession WHERE idEmpleado = ? AND fecha = CURDATE()";
+        PreparedStatement sentenciaReset = cnx.prepareStatement(resetIntentos);
+        sentenciaReset.setLong(1, idEmpleado);
+        sentenciaReset.executeUpdate();
+    }
+
+    private void incrementIntentos(Connection cnx, long idEmpleado, String ipCliente) throws SQLException {
+        String updateIntentos = "INSERT INTO IntentosSession (idEmpleado, ip, cantidad, fecha, hora, usuarioModificador) "
+                + "VALUES (?, ?, 1, CURDATE(), NOW(), ?) "
+                + "ON DUPLICATE KEY UPDATE cantidad = cantidad + 1, ip = VALUES(ip), fecha = CURDATE(), hora = NOW()";
+        PreparedStatement sentenciaUpdate = cnx.prepareStatement(updateIntentos);
+        sentenciaUpdate.setLong(1, idEmpleado);
+        sentenciaUpdate.setString(2, ipCliente);
+        sentenciaUpdate.setLong(3, idEmpleado);
+        sentenciaUpdate.executeUpdate();
     }
 
     public int createUser(String dni, String nombres, String correo, String contra,
